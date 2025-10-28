@@ -1,0 +1,36 @@
+<!doctype html>
+<html>
+<head>
+<meta charset="utf-8">
+<title>Re: tech question</title>
+<style>
+body{font-family:system-ui, -apple-system, "Segoe UI", Roboto, Arial; max-width:880px; margin:3rem auto; padding:0 1rem;}
+header h1{font-size:1.25rem;margin:0 0 .25rem 0}
+header p{color:#555; margin:.25rem 0 1rem 0}
+.msg-body{background:#fff; padding:1rem; border:1px solid #eee; border-radius:6px}
+a.year-link{display:inline-block; margin-right:.5rem}
+</style>
+</head>
+<body>
+<header>
+<h1>Re: tech question</h1>
+<p>From: vortex6066 • Date: 2011-02-20 02:31:07 +0000</p>
+<p><a href="../browse/index.html">Browse</a> • <a href="../msg/20790.html">Prev message</a> • <a href="../msg/20792.html">Next message</a> • <a href="../msg/20790.html">Prev in thread</a> • <a href="../msg/20798.html">Next in thread</a></p>
+</header>
+<article class="msg-body">
+<pre style='white-space:pre-wrap;'>Hi Luis,
+Yes, the sweep circuit will work at the frequency you mention. 0.16Hz is a 3 seconds sweep up (or down) period. 
+A standard op-amp sweep circuit will go a lot lower in frequency than that with appropriate changes of timing resistor and capacitor. 
+The limiting factor with such timing circuits is the leakage inside the electrolytic capacitor when this type of capacitor is used in the timing circuit. With very very low frequencies (long timing periods), the internal leakage of the capacitor starts to degrade the short term accuracy of the timing - but this would be for a sweep period waveform of 3 minutes or more, so its not really a problem for the usual sweep periods of 3 to 10 seconds or so.
+Hope this helps.
+regards,
+JEFF
+
+--- In EVP-ITC@yahoogroups.com, &quot;Luis&quot; &lt;luispucp098@...&gt; wrote:
+&gt;
+&gt; 
+&gt; hi , i have an important question , in linear sweep circuit , whith opamp , what is the minimum frecuency it can have ?... i ask this because , considering the recomendation of time 3 s 0-8v , the frecuency will be 0.16 hertz . This circuit can work whith this frecuency ? ...
+&gt;</pre>
+</article>
+</body>
+</html>

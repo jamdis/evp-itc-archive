@@ -60,25 +60,28 @@
     }
   }
 
+  function normId(id) {
+    if (!id) return "";
+    // remove surrounding angle brackets if present (same logic as generator)
+    return String(id).trim().replace(/^<|>$/g, "");
+  }
+
   function render(items) {
     const box = document.getElementById('results');
     box.innerHTML = "";
     items.slice(0, 50).forEach(it => {
       const div = document.createElement('div');
       div.className = 'result';
-      const previewId = `pv-${it.id}`;
       div.innerHTML = `
         <div class="subject">
           ${it.subject || "(no subject)"} <span class="score">score ${it.score.toFixed(3)}</span>
         </div>
         <div class="meta">${it.author || "unknown"} · ${it.timestamp || "no date"} · id ${it.id}</div>
-        <button data-id="${it.id}" style="margin-top:.25rem">Show full text</button>
-        <div id="${previewId}"></div>
+        <div class="result-controls">
+          <a href="msg/${encodeURIComponent(normId(it.id))}.html" class="open-msg-link">Open message</a>
+        </div>
       `;
       box.appendChild(div);
-      const btn = div.querySelector("button");
-      const tgt = div.querySelector(`#${previewId}`);
-      btn.addEventListener("click", () => showFullText(tgt, it.id));
     });
     document.getElementById('status').textContent =
       `${items.length} result(s)`;

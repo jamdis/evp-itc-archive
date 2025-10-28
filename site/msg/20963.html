@@ -1,0 +1,163 @@
+<!doctype html>
+<html>
+<head>
+<meta charset="utf-8">
+<title>Re: [EVP-ITC] Re: Important question !!!</title>
+<style>
+body{font-family:system-ui, -apple-system, "Segoe UI", Roboto, Arial; max-width:880px; margin:3rem auto; padding:0 1rem;}
+header h1{font-size:1.25rem;margin:0 0 .25rem 0}
+header p{color:#555; margin:.25rem 0 1rem 0}
+.msg-body{background:#fff; padding:1rem; border:1px solid #eee; border-radius:6px}
+a.year-link{display:inline-block; margin-right:.5rem}
+</style>
+</head>
+<body>
+<header>
+<h1>Re: [EVP-ITC] Re: Important question !!!</h1>
+<p>From: Zack Widup • Date: 2011-03-03 16:35:01 +0000</p>
+<p><a href="../browse/index.html">Browse</a> • <a href="../msg/20962.html">Prev message</a> • <a href="../msg/20964.html">Next message</a> • <a href="../msg/20961.html">Prev in thread</a> • <a href="../msg/20982.html">Next in thread</a></p>
+</header>
+<article class="msg-body">
+<pre style='white-space:pre-wrap;'>Oh, OK.
+
+If you want to use a common ground for the power supply, you must put a (+)
+voltage on pin 4 and the same (-) voltage on pin 11. For example, +12v on
+pin 4 and -12v on pin 11. The input and output will show zero DC volts with
+no input, referenced to the power supply grounds.
+
+If you put a (+) voltage on pin 4 and ground pin 11, the input and output
+pins will reference to half that voltage. So if you put +12v on pin 4 and
+ground pin 11 with a single power supply voltage, then the output will have
+6 volts on it and anything referenced to &quot;ground&quot; on a schematic must
+actually be referenced to 6 volts. You would have to use DC blocking
+capacitors on the input and output to connect to other circuits.
+
+Zack
+
+
+On Thu, Mar 3, 2011 at 9:42 AM, Luis &lt;luispucp098@...&gt; wrote:
+
+&gt;
+&gt;
+&gt;
+&gt; Well , I think you didnt understand me . My question was , What must be
+&gt; conected to pins 4 and 11 ? What voltage ? ... I didnt know if , for example
+&gt; , pin 11 must be conected to 0v (ground level), or to
+&gt; -12v , That was the question . (I know perfectly read a datasheet )
+&gt;
+&gt;
+&gt; --- In EVP-ITC@yahoogroups.com, Zack Widup &lt;w9sz.zack@...&gt; wrote:
+&gt; &gt;
+&gt; &gt; Rule #1 of being an EE: Always get the data sheet. Most manufacturers
+&gt; &gt; have the data sheets available free for download as pdf files these
+&gt; &gt; days. Back in the old days we had to request them and wait for several
+&gt; &gt; weeks until they arrived in the mail.
+&gt; &gt;
+&gt; &gt; You can do a Google search for a part number and it will usually come
+&gt; &gt; up with a link for the data sheet unless it&#x27;s a really old, obscure
+&gt; &gt; part by a manufacturer that isn&#x27;t around anymore.
+&gt; &gt;
+&gt; &gt; Zack
+&gt; &gt;
+&gt; &gt; On 3/2/11, purplespacefriend &lt;purplealiengirl@...&gt; wrote:
+&gt; &gt; &gt; 4=+plus supply, 11=- supply. the data sheet for thre chip shows the
+&gt; &gt; &gt; connections.
+&gt; &gt; &gt;
+&gt; &gt; &gt; Frank-S
+&gt; &gt; &gt;
+&gt; &gt; &gt;
+&gt; &gt; &gt; --- In EVP-ITC@yahoogroups.com, &quot;Luis&quot; &lt;luispucp098@&gt; wrote:
+&gt; &gt; &gt;&gt;
+&gt; &gt; &gt;&gt;
+&gt; &gt; &gt;&gt; Hi , i have an important question , is about linear sweep circuit ,
+&gt; whith
+&gt; &gt; &gt;&gt; opamp tl074 , the squematic dont say where must be conected the pins 4
+&gt; and
+&gt; &gt; &gt;&gt; 11 , 11 is - amd 4 + . How is the conection ? ... 11 to -12v or 0 . 4
+&gt; to
+&gt; &gt; &gt;&gt; +12 ? .... I tried , and conecting 11 to 0 v , i got a triangular wave
+&gt; ,
+&gt; &gt; &gt;&gt; but , i couldnt get a apropiate dc level , the minimum level i got was
+&gt; &gt; &gt;&gt; almost 14v , when i tried more low dc level , the wave lose the form ,
+&gt; and
+&gt; &gt; &gt;&gt; the offset pot didnt go ok , it didnt have any effect in triangular
+&gt; wave .
+&gt; &gt; &gt;&gt;
+&gt; &gt; &gt;
+&gt; &gt; &gt;
+&gt; &gt; &gt;
+&gt; &gt;
+&gt;
+&gt;  
+&gt;
+
+Oh, OK.I you wan o use a common g ound o he powe supply, you mus pu a (+) ol age on pin 4 and he same (-) ol age on pin 11. Fo example, +12 on pin 4 and -12 on pin 11. The inpu and ou pu will show ze o DC ol s wi h no inpu , e e enced o he powe supply g ounds.
+I you pu a (+) ol age on pin 4 and g ound pin 11, he inpu and ou pu pins will e e ence o hal ha ol age. So i you pu +12 on pin 4 and g ound pin 11 wi h a single powe supply ol age, hen he ou pu will ha e 6 ol s on i and any hing e e enced o &quot;g ound&quot; on a schema ic mus ac ually be e e enced o 6 ol s. You would ha e o use DC blocking capaci o s on he inpu and ou pu o connec o o he ci cui s.
+Zack On Thu, Ma 3, 2011 a 9:42 AM, Luis luispucp098@...&gt; w o e:
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+ 
+
+
+
+ 
+
+
+ 
+ 
+ 
+ 
+ Well , I hink you didn unde s and me . My ques ion was , Wha mus be conec ed o pins 4 and 11 ? Wha ol age ? ... I didn know i , o example , pin 11 mus be conec ed o 0 (g ound le el), o o
+ -12 , Tha was he ques ion . (I know pe ec ly ead a da ashee )
+
+--- In EVP-ITC@yahoog oups.com, Zack Widup w o e:
+&gt;
+&gt; Rule #1 o being an EE: Always ge he da a shee . Mos manu ac u e s
+&gt; ha e he da a shee s a ailable ee o download as pd iles hese
+&gt; days. Back in he old days we had o eques hem and wai o se e al
+&gt; weeks un il hey a i ed in he mail.
+&gt; 
+&gt; You can do a Google sea ch o a pa numbe and i will usually come
+&gt; up wi h a link o he da a shee unless i &#x27;s a eally old, obscu e
+&gt; pa by a manu ac u e ha isn&#x27; a ound anymo e.
+&gt; 
+&gt; Zack
+&gt; 
+&gt; On 3/2/11, pu plespace iend w o e:
+&gt; &gt; 4=+plus supply, 11=- supply. he da a shee o h e chip shows he
+&gt; &gt; connec ions.
+&gt; &gt;
+&gt; &gt; F ank-S
+&gt; &gt;
+&gt; &gt;
+&gt; &gt; --- In EVP-ITC@yahoog oups.com, &quot;Luis&quot; w o e:
+&gt; &gt;&gt;
+&gt; &gt;&gt;
+&gt; &gt;&gt; Hi , i ha e an impo an ques ion , is abou linea sweep ci cui , whi h
+&gt; &gt;&gt; opamp l074 , he squema ic don say whe e mus be conec ed he pins 4 and
+&gt; &gt;&gt; 11 , 11 is - amd 4 + . How is he conec ion ? ... 11 o -12 o 0 . 4 o
+&gt; &gt;&gt; +12 ? .... I ied , and conec ing 11 o 0 , i go a iangula wa e ,
+&gt; &gt;&gt; bu , i couldn ge a ap opia e dc le el , he minimum le el i go was
+&gt; &gt;&gt; almos 14 , when i ied mo e low dc le el , he wa e lose he o m , and
+&gt; &gt;&gt; he o se po didn go ok , i didn ha e any e ec in iangula wa e .
+&gt; &gt;&gt;
+&gt; &gt;
+&gt; &gt;
+&gt; &gt;
+&gt;</pre>
+</article>
+</body>
+</html>

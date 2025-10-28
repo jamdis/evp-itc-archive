@@ -34,3 +34,6 @@ Thumbs.db
 export/
 tmp/
 uploads/
+
+# Generated browse pages
+site/browse/

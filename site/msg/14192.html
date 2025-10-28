@@ -1,0 +1,1975 @@
+<!doctype html>
+<html>
+<head>
+<meta charset="utf-8">
+<title>Re: [EVP-ITC] File uploading rules-ATTENTION JON</title>
+<style>
+body{font-family:system-ui, -apple-system, "Segoe UI", Roboto, Arial; max-width:880px; margin:3rem auto; padding:0 1rem;}
+header h1{font-size:1.25rem;margin:0 0 .25rem 0}
+header p{color:#555; margin:.25rem 0 1rem 0}
+.msg-body{background:#fff; padding:1rem; border:1px solid #eee; border-radius:6px}
+a.year-link{display:inline-block; margin-right:.5rem}
+</style>
+</head>
+<body>
+<header>
+<h1>Re: [EVP-ITC] File uploading rules-ATTENTION JON</h1>
+<p>From: Rj • Date: 2009-05-10 22:13:00 +0000</p>
+<p><a href="../browse/index.html">Browse</a> • <a href="../msg/14191.html">Prev message</a> • <a href="../msg/14193.html">Next message</a> • <a href="../msg/14191.html">Prev in thread</a> • <a href="../msg/14193.html">Next in thread</a></p>
+</header>
+<article class="msg-body">
+--0-1315638298-1241993580=:62585
+Content-Type: text/plain; charset=iso-8859-1
+Content-Transfer-Encoding: quoted-printable
+
+They are not necessarily the same bytes, but I was proposing a quick check =
+just to see if the files were in the same ballpark.=A0 Look at it the other=
+ way: if the number of bytes were DIFFERENT, than you'd know the files HAD =
+changed, and you could stop testing.=A0 But if the number of bytes are the =
+same, it tends to indicate the files are likely the same, but you still nee=
+d a low level file comparison to be sure.
+
+My method is to compare the file=
+s using the CMP command in unix.=A0 There are many programs to compare file=
+s, but you have to be careful not to use one that does a line-by-line compa=
+re (or a comparison meant for text files), since text files can be differen=
+t at a low level, but look essential the same in an editor (because of the =
+way spaces and tabs and new lines work between editors and platforms).
+
+But=
+ anyway, the way to compare is with a program that can compare binary files=
+, not text files.
+
+
+--- On Sun, 5/10/09, April Abercrombie <april@abercromb=
+ieghostresearch.com> wrote:
+
+From: April Abercrombie <april@abercrombieghos=
+tresearch.com>
+Subject: Re: [EVP-ITC] File uploading rules-ATTENTION JON
+To=
+: EVP-ITC@yahoogroups.com
+Date: Sunday, May 10, 2009, 2:42 PM
+
+
+
+
+
+
+
+
+
+
+
+  =
+  
+            
+            
+
+
+      
+      
+
+
+So if the number of bytes ma=
+tch then they 
+are the same bytes? See where my confusion comes in?
+=A0
+How=
+ does one do a bit-level comparison? Is 
+there a program that does that, or=
+ is there some way of comparison by looking at 
+the file's properties?
+=A0
+=
+
+  ----- Original Message ----- 
+  From: 
+  Rj 
+  To: EVP-ITC@yahoogroups .=
+com 
+  Sent: Sunday, May 10, 2009 3:35 PM
+  Subject: Re: [EVP-ITC] File upl=
+oading 
+  rules-ATTENTION JON
+  
+
+  
+  
+  
+    
+    
+      A file's content=
+, it's integrity, is simply the bytes 
+        (and their bits) in the file=
+.=A0 If the file's content integrity is 
+        changed, that is, by defin=
+ition, changing the bytes.=A0 If the bytes 
+        in there are not change=
+d, then that integrity has not changed.
+
+It 
+        is possible to mess wi=
+th other things about a file (like its name, its 
+        suffix, or its ow=
+nership) but this does not effect the contents, and so 
+        would not a=
+ffect that integrity, or the sound of the file (assuming you 
+        could=
+ read it at all after changing the ownership, or the suffix, 
+        etc).=
+
+
+When you do your tests, if you cannot do a bit level 
+        comparison,=
+ I would recommend at least checking the file sizes.=A0 If 
+        they ar=
+e identical, there is a very high probability that the content 
+        has=
+ not changed.
+
+
+
+
+--- On Sun, 5/10/09, April 
+        Abercrombie 
+        =
+<april@abercrombiegh ostresearch. com> 
+        wrote:
+
+        
+From: 
+   =
+       April Abercrombie 
+          <april@abercrombiegh ostresearch. com>
+=
+Subject: Re: 
+          [EVP-ITC] File uploading rules-ATTENTION JON
+To: 
+ =
+         EVP-ITC@yahoogroups .com
+Date: Sunday, May 10, 2009, 2:28 
+       =
+   PM
+
+
+          
+          
+          
+          Admittedly I do not=A0kn=
+ow much 
+          about bit-level comparisons, what they can or can't show=
+ so I will 
+          have to leave that to you. I have doubts because I wo=
+rry once a file's 
+          integrity has been messed with, I wonder that =
+even though the bits 
+          match, maybe that doesn't mean they are the=
+ same quality as the 
+          original. I really don't know though what i=
+s possible or impossible 
+          when it comes to this area.
+          =
+=A0
+          "It is probably possible to set up an email compression schem=
+e 
+          that does do lossy audio compression.=A0 My tests show my setu=
+p 
+          does not.=A0 If you'd like me to help test your setup, we can =
+do 
+          that too. From what I see, lossy compression from an attachme=
+nt would 
+          be very unusual."
+          =A0
+          The problem I=
+ have is that not 
+          just from Jon, but I have heard it from other =
+people, and a 
+          professional and they all=A0said that loss is poss=
+ible. 
+          From all that, my conclusion was 
+          that maybe in =
+some cases loss was possible.
+          =A0
+          However, your argumen=
+ts do put 
+          doubt back into my mind, which pisses me off, because =
+I had originally 
+          argued feverishly for no loss, then I heard dif=
+ferent from different 
+          sources and decided to do what=A0I=A0thoug=
+ht was the right thing 
+          by contacting a third party professional.=
+ So after all that, I decided 
+          I was licked and had to eat crow.
+=
+          =A0
+          Now I am back at square one, from 
+          the ot=
+her side LOL!!! Computer people have been wrong in the 
+          past.
+   =
+       =A0
+          =A0
+          "It is probably possible to set up an em=
+ail 
+          compression scheme that does do lossy audio compression.=A0 =
+My 
+          tests show my setup does not.=A0 If you'd like me to help tes=
+t your 
+          setup, we can do that too. From what I see, lossy compres=
+sion from an 
+          attachment would be very unusual."
+          =A0
+  =
+        I have not tested it from my 
+          computer, as I haven't had =
+any problems with loss. I would really like 
+          to have Jon work wit=
+h us on this, because he was the original person 
+          who told me I w=
+as wrong.
+          =A0
+          But I will test it from my side. I 
+     =
+     will send a wav file to one of my other addresses. Then I will 
+      =
+    download and compare. If I think I hear a difference, then maybe I can =
+
+          have you do a bit-level comparison on the files.
+          =A0
+ =
+         Either way, I am going to get to 
+          the bottom of this.
+  =
+        =A0
+          =A0
+          =A0
+          
+            ----- 
+     =
+       Original Message ----- 
+            From: 
+            Rj 
+         =
+   To: 
+            EVP-ITC@yahoogroups 
+            .com 
+            Sent=
+: 
+            Sunday, May 10, 2009 2:59 PM
+            Subject: 
+         =
+   Re: [EVP-ITC] File uploading rules-ATTENTION JON
+            
+
+         =
+   
+            
+            
+              
+              
+               =
+ Yes you can tell loss of quality by a bit-level 
+                  compari=
+son.=A0 An audio file is just a file of bytes, that 
+                  is l=
+ater interpreted by an audio player.=A0 Two files with 
+                  t=
+he exact same contents, whether they are audio or image or a 
+             =
+     dababase or an exe, are indistinguishable from each 
+                 =
+ other.=A0 That is, if I copied the contents of one to a new 
+             =
+     file, and the contents of the other to a new file, and asked 
+        =
+          you which file each came from, there would be no way to 
+        =
+          tell.=A0 Even the audio player could not tell.=A0 The 
+          =
+        data is identical, and so the sound (or the picture, etc) 
+        =
+          would be identical.
+
+Yes I did listen to the results, 
+          =
+        but that is not the best test (they sounded identical, but 
+       =
+           that is a subjective opinion).=A0 The real test is compring 
+   =
+               the contents.=A0 Identical contents means indentical data, 
+=
+                  means identical audio.
+
+It is probably possible to set 
+ =
+                 up an email compression scheme that does do lossy audio 
+ =
+                 compression.=A0 My tests show my setup does not.=A0 If 
+  =
+                you'd like me to help test your setup, we can do that too. =
+
+                  From what I see, lossy compression from an attachment wo=
+uld be 
+                  very unusual.
+
+
+--- On Sun, 5/10/09, April 
+     =
+             Abercrombie <april@abercrombiegh ostresearch. 
+               =
+   com> wrote:
+
+                  
+From: 
+                    April Abercro=
+mbie <april@abercrombiegh ostresearch. 
+                    com>
+Subject: R=
+e: [EVP-ITC] File uploading 
+                    rules-ATTENTION JON
+To: EV=
+P-ITC@yahoogroups .com
+Date: 
+                    Sunday, May 10, 2009, 1:5=
+0 PM
+
+
+                    
+                    
+                    
+     =
+               I have not personally 
+                    experienced the l=
+oss myself. Jon from this list is the one 
+                    who original=
+ly told me about it.=A0I have also heard of 
+                    it happeni=
+ng to a few other people.=A0After=A0my 
+                    conversation=A0=
+with Jon, I talked to a computer 
+                    professional, and he =
+told me that you can experience loss in 
+                    attached files=
+.
+                    =A0
+                    I don't know if you 
+        =
+            would be able to tell loss of quality in an audio file with 
+  =
+                  a bit-level comparison. Just because the data has been 
+ =
+                   replaced, doesn't have to mean it is perfect.
+          =
+          =A0
+                    Did you listen to the 
+                  =
+  before and=A0after results?
+                    =A0
+                    J=
+on-Please relay your 
+                    experience with the loss of quali=
+ty on emailed 
+                    files.
+                    =A0
+         =
+           =A0
+                    
+                      ----- 
+          =
+            Original Message ----- 
+                      From: 
+          =
+            Rj 
+                      To: 
+                      EVP-ITC@ya=
+hoogroups .com 
+                      Sent: 
+                      Sunday, =
+May 10, 2009 2:38 PM
+                      Subject: 
+                      =
+Re: [EVP-ITC] File uploading rules
+                      
+
+                =
+      
+                      
+                      
+                      =
+  
+                        
+                          I can't vouch for you=
+r computer or 
+                            servers, but I just did some tes=
+ts, and sent a 2.1MB 
+                            wav file from MSN to Yaho=
+o and back, once allowing 
+                            compression, and onc=
+e turning it off.=A0=A0 I 
+                            was able to verify t=
+hat one was compressed and one 
+                            was not, by che=
+cking the sizes when they arrived at 
+                            Yahoo. On=
+ce they came back to MSN, I then did a 
+                            bit-lev=
+el comparison of the original, and the ones 
+                            se=
+nt around email.=A0 They were all identical, 
+                            w=
+hich indicates lossless compression.
+
+If you 
+                            h=
+ave a file you'd like me to test for you, let me 
+                         =
+   know.=A0 But I wouldn't take someone's word for 
+                       =
+     how your server's work, without testing them 
+                        =
+    yourself.
+
+
+
+--- On Sun, 5/10/09, 
+                            April Ab=
+ercrombie <april@abercrombiegh 
+                            ostresearch. co=
+m> wrote:
+
+                            
+From: 
+                            =
+  April Abercrombie <april@abercrombiegh 
+                              ost=
+research. com>
+Subject: Re: [EVP-ITC] 
+                              File u=
+ploading rules
+To: EVP-ITC@yahoogroups 
+                              .com
+=
+Date: Sunday, May 10, 2009, 12:50 
+                              PM
+
+
+     =
+                         
+                              
+                  =
+            
+                              For 
+                           =
+   executables, you may be right. However, for wav 
+                       =
+       files, the compression during email is not loss 
+                   =
+           less. 
+                              =A0
+                       =
+       I used to 
+                              think as you do, in that th=
+e emailed 
+                              attachment=A0of a wav file would n=
+ot loose 
+                              anything. After a lengthy discourse=
+ with another 
+                              member here, I learned that I =
+was wrong. The 
+                              reason why=A0I did not realiz=
+e it in the first 
+                              place is that when I would=
+ email a wav file, I 
+                              would intentionally kee=
+p it in very small 
+                              segments, to keep file si=
+ze down. This was just 
+                              for ease of transfer.=
+ But because of this, I had 
+                              not experienced =
+any noticeable loss.
+                              =A0
+                    =
+          Now it may be 
+                              in some cases, depen=
+ding on the servers or what 
+                              have you that th=
+e file goes through, that the loss 
+                              may be le=
+ss or more. But once the attachment is 
+                              downl=
+oaded,=A0the=A0quality=A0has been 
+                              found to b=
+e less then the original 
+                              wav.
+              =
+                =A0
+                              Again though 
+           =
+                   you can only really tell when the=A0wav file is 
+       =
+                       large.
+                              =A0
+           =
+                   ----- Original Message ----- 
+                          =
+    From: 
+                                Rj 
+                            =
+    
+                                To: 
+                                E=
+VP-ITC@yahoogroups .com 
+                                Sent: 
+           =
+                     Sunday, May 10, 2009 1:36 PM
+                         =
+       Subject: 
+                                Re: [EVP-ITC] File uploadi=
+ng rules
+                                
+
+                                =
+
+                                
+                                
+        =
+                        
+                                
+                 =
+               The kind of compression that 
+                              =
+  occurs during an email attachment is "lossless": 
+                       =
+         it compress the file cleverly without losing 
+                    =
+            information.=A0 For example, if I had a 
+                      =
+          program in some .exe files, and I sent it over 
+                 =
+               email, it could compress it.=A0 But if it 
+                 =
+               lost even one bit, the resulting exe file would 
+           =
+                     not execute again after it was uncompressed on 
+      =
+                          the other side.
+
+This kind of compression 
+      =
+                          does things like looking for common patterns in 
+=
+                                the file, and replacing them with a token.=
+=A0 
+                                A rough example would be if it found "=
+Howdy 
+                                Neighbor" in a file 20 times, it cou=
+ld replace 
+                                all the occurances with say $HN=
+1.=A0 And also 
+                                write a little dictionary i=
+n there someplace 
+                                that says "$HN1=3DHowdy =
+Neighbor".
+
+When the 
+                                file gets to its dest=
+ination it can be 
+                                uncompressed, and all oc=
+curences of $HN1 are 
+                                replaced with "Howdy =
+Neighbor".=A0 So it was 
+                                compressed (instea=
+d of 14 characters each, it 
+                                only needed 4,=
+ plus the dictionary), but lost no 
+                                data.
+
+=
+Some formats, like jpeg and mp3. 
+                                are not l=
+ossless.=A0 Depending on the level 
+                                of comp=
+ression, some level of data is lost, and 
+                                s=
+o cannot be recovered or reconstructed 
+                                lat=
+er.
+
+Rick
+
+
+
+--- On Sun, 
+                                5/10/09, April Ab=
+ercrombie 
+                                <april@abercrombiegh ostresearch=
+. 
+                                com> wrote:
+
+                           =
+     
+From: 
+                                April Abercrombie <april@aberc=
+rombiegh 
+                                ostresearch. com>
+Subject: Re: [E=
+VP-ITC] 
+                                File uploading rules
+To: EVP-ITC@y=
+ahoogroups 
+                                .com
+Date: Sunday, May 10, 2009=
+, 10:26 
+                                AM
+
+
+                             =
+   
+                                
+                                
+     =
+                           Another 
+                                thing:
+=
+                                =A0
+                                I recen=
+tly 
+                                found this out. When you email a file,=
+ if it is 
+                                not saved as a compressed format=
+, the email 
+                                filtering process will actuall=
+y compress the 
+                                file automatically.
+       =
+                         =A0
+                                So even if 
+  =
+                              you have attached a wav. file, it will loose =
+
+                                resolution over the email process. It will=
+ not 
+                                sound exactly the same as the origina=
+l wav. 
+                                file. How much it differs depends o=
+n the size of 
+                                the file you are attaching. =
+If it is a 
+                                very=A0large file, it will soun=
+d much 
+                                different.
+                        =
+        =A0
+                                The only 
+                     =
+           exception to this is if the wav. file is small 
+                =
+                enough that the filtering process will ignore 
+            =
+                    it. It has to be pretty small though, like under 
+     =
+                           1=A0MB (I am not exactly sure of the 
+          =
+                      threshold).
+                                =A0
+     =
+                           The best way 
+                                to=
+ share files over the internet=A0if you 
+                                wa=
+nt them as close to the original as possible 
+                             =
+   is to upload them directly to a 
+                                website=
+.
+                                =A0
+                                
+    =
+                            ----- 
+                                Original=
+ Message ----- 
+                                From: 
+                    =
+            Rj 
+                                
+                          =
+      To: 
+                                EVP-ITC@yahoogroups .com 
+      =
+                          Sent: 
+                                Sunday, Ma=
+y 10, 2009 10:54 AM
+                                Subject: 
+             =
+                   Re: [EVP-ITC] File uploading rules
+                     =
+           
+
+                                
+                             =
+   
+                                
+                                
+     =
+                           
+                                
+Pixelization d=
+oesn't clean-up 
+                                the data: it replaces it.=
+=A0 Imagine taking a 
+                                picture of a field of=
+ flowers, and beginning to 
+                                add levels or p=
+ixelization to the picture.=A0 
+                                Soon, you w=
+ould not be able to tell there were 
+                                flower=
+s there at all.=A0 You would see a lot 
+                                of =
+colored blocks.
+
+Or in the other 
+                                direction=
+, imagine you are looking at a 
+                                competely r=
+andomize bunch of pixes on your 
+                                screen: a =
+complete screen of truely random 
+                                static sn=
+ow.=A0 Pixelizing this, after a 
+                                while, you=
+ would again start to see colored 
+                                blocks.
+=
+
+What's happening is that it is 
+                                processing=
+ an area of the image, taking (for 
+                                instanc=
+e) the average value of that entire area, 
+                                =
+and replacing all the blocks in that area with 
+                           =
+     the average.=A0 In video processing, this 
+                           =
+     would result in a field of multi-colored flowers 
+                    =
+            being replaced by, for instance, a big 
+                       =
+         greyish-bluish block, with no resemblance to 
+                    =
+            flowers.=A0 In the noise example, it maybe 
+                   =
+             replace all the random pixels with another big 
+              =
+                  greyish-bluish block.=A0 If you did not know 
+           =
+                     beforehand what the original picture was, you 
+       =
+                         couldn't tell whether your pixelized image was 
+  =
+                              really a field of flowers, a chevy, the sky w=
+ith 
+                                clouds, or a random bunch of pixels.
+
+=
+It 
+                                works the same with the sound files.=A0=
+ 
+                                Taking something as complex as speech, an=
+d 
+                                replacing frequencies with their average=
+s, loses 
+                                the speech the farther you go, un=
+til you head 
+                                strange fluctuating square wa=
+ves.=A0 Doing 
+                                the same to random static wi=
+ll eventually 
+                                produce the same thing.=A0 A=
+nd random 
+                                fluctuating square waves can sou=
+nd a bit like 
+                                speech - or at least, you co=
+uld have fun sharing 
+                                with each other what =
+you thing they 'sound 
+                                like'.
+
+
+
+
+
+--- On S=
+un, 
+                                5/10/09, Misty Dawn <bulletbabea@ 
+   =
+                             yahoo.com> wrote:
+
+                           =
+     
+From: 
+                                Misty Dawn <bulletbabea@ 
+    =
+                            yahoo.com>
+Subject: Re: [EVP-ITC] File 
+       =
+                         uploading rules
+To: EVP-ITC@yahoogroups 
+         =
+                       .com
+Date: Sunday, May 10, 2009, 9:29 
+             =
+                   AM
+
+
+                                
+                  =
+              
+                                
+                           =
+     
+                                
+                                
+   =
+                             
+                                I always save=
+ the whole file in wav format 
+                                then do my c=
+lips as mp3. Then I have the 
+                                original for =
+analysis. 
+                                =A0
+                            =
+    As far as pixelization of non sounds/white 
+                           =
+     noise whos to say that isnt being manipulated by 
+                    =
+            them as well LOL. Water is a form of white 
+                   =
+             noise. I seem to remember some experiments done 
+             =
+                   with blank tapes/film, no recording=A0done 
+            =
+                    yet there were voices/images there. I find it 
+        =
+                        all interesting.
+                                =
+=A0
+                                Just a thought. Ok off to work now!
+   =
+                             Misty
+
+--- On Sun, 5/10/09, Rj 
+              =
+                  <rasterer@yahoo. com> 
+                                wr=
+ote:
+
+                                
+From: 
+                             =
+   Rj <rasterer@yahoo. com>
+Subject: Re: 
+                                [=
+EVP-ITC] File uploading rules
+To: 
+                                EVP-ITC@=
+yahoogroups .com
+Date: Sunday, May 
+                                10, 200=
+9, 11:47 AM
+
+
+                                
+                            =
+    
+                                
+                                
+    =
+                            
+                                
+             =
+                   Be a bit careful of formats like 
+                      =
+          mp3 if you are doing a detailed analysis of the 
+                =
+                sounds though.=A0=A0 While some formats 
+                  =
+              (like wav) can store the audio very close to the 
+           =
+                     way it was recorded, formats like mp3 compress 
+      =
+                          the file, and in so doing lose some of the sonic =
+
+                                details.=A0 This may not be a big deal in =
+
+                                music, where the audio is fairly clear to =
+begin 
+                                with.=A0 But with sound sources with=
+ a lot of 
+                                noise (like evps), this can not =
+only obscure any 
+                                real sounds, but pixelize=
+ non-sounds (like white 
+                                noise) and make th=
+em start to sound like 
+                                speech.
+
+So mp3 mig=
+ht be good for sharing 
+                                the data, once you'=
+ve already formed an opinion 
+                                based on an a=
+nalysis of the wav file.=A0 But 
+                                mp3 is not=
+ good as a medium for analysis.=A0 
+                                It can =
+lead to many false positives and 
+                                misinterp=
+retations.
+
+--- On Sun, 
+                                5/10/09, Misty Daw=
+n <bulletbabea@ 
+                                yahoo.com> wrote:
+
+       =
+                         
+From: 
+                                Misty Dawn=
+ <bulletbabea@ 
+                                yahoo.com>
+Subject: Re: [EV=
+P-ITC] File 
+                                uploading rules
+To: EVP-ITC@ya=
+hoogroups 
+                                .com
+Date: Sunday, May 10, 2009,=
+ 8:26 
+                                AM
+
+
+                               =
+ 
+                                
+                                
+       =
+                         
+                                
+                =
+                
+                                
+                         =
+       Thanks =3D)
+                                =A0
+                    =
+            =A0You will get the hang of it. Kristen 
+                      =
+          is right thats how you save it. For most 
+                       =
+         softwares its under save as or export as. If you 
+                =
+                still have trouble use one of the links I posted 
+         =
+                       to help ya out.
+                                =A0
+=
+                                Misty
+
+--- On Sun, 5/10/09, 
+              =
+                  SnowfireL@aol. com <SnowfireL@aol. 
+                     =
+           com> wrote:
+
+                                
+From: 
+           =
+                     SnowfireL@aol. com <SnowfireL@aol. 
+                  =
+              com>
+Subject: Re: [EVP-ITC] File uploading 
+                 =
+               rules
+To: EVP-ITC@yahoogroups .com
+Date: 
+                  =
+              Sunday, May 10, 2009, 2:14 AM
+
+
+                             =
+   
+                                
+                                
+     =
+                           Ok, Misty I'll take them out, this 
+            =
+                    recording stuff is new to me.
+                         =
+       =A0
+                                
+                               =
+ In a message dated 5/10/2009 1:13:01 A.M. 
+                               =
+ Eastern Daylight Time, bulletbabea@ yahoo.com 
+                           =
+     writes:
+                                
+                             =
+   
+                                
+                                
+
+
+   =
+                             
+                                
+            =
+                    
+                                
+                     =
+           
+                                Please do not upload wav format=
+ files here 
+                                they will have to be removed. =
+Our group only has 
+                                a=A0very limited=A0amou=
+nt of space. Upload 
+                                bigger files and mass =
+amount of files to your 
+                                esnips.com account=
+s or elsewhere to be shared 
+                                here using lin=
+ks. 
+                                =A0
+                                Mi=
+sty
+
+--- On Sat, 5/9/09, 
+                                EVP-ITC@yahoogrou=
+ps .com 
+                                <EVP-ITC@yahoogroups .com> 
+      =
+                          wrote:
+
+                                
+From: 
+ =
+                               EVP-ITC@yahoogroups .com <EVP-ITC@yahoogroup=
+s 
+                                .com>
+Subject: [EVP-ITC] New file upload=
+ed 
+                                to EVP-ITC
+To: EVP-ITC@yahoogroups 
+   =
+                             .com
+Date: Saturday, May 9, 2009, 11:50 
+     =
+                           PM
+
+
+                                
+          =
+                      
+                                
+Hello,
+
+This email =
+message is a 
+                                notification to let you know =
+that
+a file has 
+                                been uploaded to the Files=
+ area of the EVP-ITC 
+                                
+group.
+
+File : /Snow=
+firel/test1sou 
+                                nds_like_ three_squeeking_ =
+words.wav 
+                                
+Uploaded by : snowfirel <Snowfi=
+reL@aol. 
+                                com> 
+Description : Test1 these a=
+re 
+                                last 3 words, can't make them out, have=
+n't 
+                                changed anything on this one tape from=
+ last 
+                                night aprox. 8 p. the whole tape wit=
+h my mom on 
+                                it was around 4 minutes long, =
+seems like these 
+                                folks on the other side h=
+ave a lot to say in a 
+                                short time. 
+
+You ca=
+n access this file at 
+                                the URL:
+http://grou=
+ps. 
+                                yahoo.com/ group/EVP- ITC/files/ Snowf=
+irel/ 
+                                test1sounds_ like_three_ squeeking_ =
+
+                                words.wav 
+
+To learn more about file 
+    =
+                            sharing for your group, please visit:
+http://he=
+lp. 
+                                yahoo.com/ l/us/yahoo/ groups/original=
+/ 
+                                members/web/ 
+                          =
+      index.htmlfiles
+
+Regards,
+
+snowfirel 
+                               =
+ <SnowfireL@aol. 
+                                com>
+
+
+
+
+                =
+                
+                                
+
+                        =
+        
+                                The Average US Credit Score is 692=
+. See Yours in Just 2 
+                                Easy 
+              =
+                  Steps!
+
+
+
+
+
+
+
+
+
+ 
+
+      
+
+    
+    
+	
+	 
+	
+	
+
+
+
+
+
+
+
+
+	
+
+=
+
+	
+	
+
+
+      
+--0-1315638298-1241993580=:62585
+Content-Type: text/html; charset=iso-8859-1
+Content-Transfer-Encoding: quoted-printable
+
+<table cellspacing=3D"0" cellpadding=3D"0" border=3D"0" ><tr><td valign=3D"=
+top" style=3D"font: inherit;">They are not necessarily the same bytes, but =
+I was proposing a quick check just to see if the files were in the same bal=
+lpark.  Look at it the other way: if the number of bytes were DIFFEREN=
+T, than you'd know the files HAD changed, and you could stop testing. =
+ But if the number of bytes are the same, it tends to indicate the files ar=
+e likely the same, but you still need a low level file comparison to be sur=
+e.<br><br>My method is to compare the files using the CMP command in unix.&=
+nbsp; There are many programs to compare files, but you have to be careful =
+not to use one that does a line-by-line compare (or a comparison meant for =
+text files), since text files can be different at a low level, but look ess=
+ential the same in an editor (because of the way spaces and tabs and new li=
+nes work between editors and platforms).<br><br>But anyway, the way to comp=
+are
+ is with a program that can compare binary files, not text files.<br><b=
+r><br>--- On <b>Sun, 5/10/09, April Abercrombie <i><april@abercrombiegho=
+stresearch.com></i></b> wrote:<br><blockquote style=3D"border-left: 2px =
+solid rgb(16, 16, 255); margin-left: 5px; padding-left: 5px;"><br>From: Apr=
+il Abercrombie <april@...><br>Subject: Re: [=
+EVP-ITC] File uploading rules-ATTENTION JON<br>To: EVP-ITC@yahoogroups.com<=
+br>Date: Sunday, May 10, 2009, 2:42 PM<br><br><div id=3D"yiv407823590">
+
+
+
+=
+
+
+
+    <div id=3D"ygrp-text">
+      
+      <p>
+
+
+</p><div><font face=3D"Myr=
+iad Pro" size=3D"2">So if the number of bytes match then they 
+are the same=
+ bytes? See where my confusion comes in?</font></div>
+<div><font face=3D"My=
+riad Pro" size=3D"2"></font> </div>
+<div><font face=3D"Myriad Pro" siz=
+e=3D"2">How does one do a bit-level comparison? Is 
+there a program that do=
+es that, or is there some way of comparison by looking at 
+the file's prope=
+rties?</font></div>
+<div><font face=3D"Myriad Pro" size=3D"2"></font> =
+</div>
+<blockquote style=3D"border-left: 2px solid rgb(0, 0, 0);" dir=3D"lt=
+r">
+  <div style=3D"font-family: arial; font-style: normal; font-variant: n=
+ormal; font-weight: normal; font-size: 10pt; line-height: normal; font-size=
+-adjust: none; font-stretch: ; -x-system-font: none;">----- Original Messag=
+e ----- </div>
+  <div style=3D"background: rgb(228, 228, 228) none repeat s=
+croll 0% 0%; font-family: arial; font-style: normal; font-variant: normal; =
+font-weight: normal; font-size: 10pt; line-height: normal; font-size-adjust=
+: none; font-stretch: ; -x-system-font: none; -moz-background-clip: -moz-in=
+itial; -moz-background-origin: -moz-initial; -moz-background-inline-policy:=
+ -moz-initial;"><b>From:</b> 
+  <a rel=3D"nofollow" title=3D"rasterer@yahoo=
+.com" ymailto=3D"mailto:rasterer@..." target=3D"_blank" href=3D"/mc/c=
+ompose?to=3Drasterer@...">Rj</a> </div>
+  <div style=3D"font-family: =
+arial; font-style: normal; font-variant: normal; font-weight: normal; font-=
+size: 10pt; line-height: normal; font-size-adjust: none; font-stretch: ; -x=
+-system-font: none;"><b>To:</b> <a rel=3D"nofollow" title=3D"EVP-ITC@yahoog=
+roups.com" ymailto=3D"mailto:EVP-ITC@yahoogroups.com" target=3D"_blank" hre=
+f=3D"/mc/compose?to=3DEVP-ITC@yahoogroups.com">EVP-ITC@yahoogroups .com</a>=
+ </div>
+  <div style=3D"font-family: arial; font-style: normal; font-varian=
+t: normal; font-weight: normal; font-size: 10pt; line-height: normal; font-=
+size-adjust: none; font-stretch: ; -x-system-font: none;"><b>Sent:</b> Sund=
+ay, May 10, 2009 3:35 PM</div>
+  <div style=3D"font-family: arial; font-sty=
+le: normal; font-variant: normal; font-weight: normal; font-size: 10pt; lin=
+e-height: normal; font-size-adjust: none; font-stretch: ; -x-system-font: n=
+one;"><b>Subject:</b> Re: [EVP-ITC] File uploading 
+  rules-ATTENTION JON</=
+div>
+  <div><br></div>
+  <div id=3D"ygrp-text">
+  <p>
+  <table border=3D"0"=
+ cellpadding=3D"0" cellspacing=3D"0">
+    <tbody>
+    <tr>
+      <td valign=
+=3D"top">A file's content, it's integrity, is simply the bytes 
+        (an=
+d their bits) in the file.  If the file's content integrity is 
+      =
+  changed, that is, by definition, changing the bytes.  If the bytes 
+=
+        in there are not changed, then that integrity has not changed.<br><=
+br>It 
+        is possible to mess with other things about a file (like its=
+ name, its 
+        suffix, or its ownership) but this does not effect the =
+contents, and so 
+        would not affect that integrity, or the sound of =
+the file (assuming you 
+        could read it at all after changing the own=
+ership, or the suffix, 
+        etc).<br><br>When you do your tests, if you=
+ cannot do a bit level 
+        comparison, I would recommend at least chec=
+king the file sizes.  If 
+        they are identical, there is a very =
+high probability that the content 
+        has not changed.<br><br><br><br>=
+<br>--- On <b>Sun, 5/10/09, April 
+        Abercrombie 
+        <i><apri=
+l@abercrombiegh ostresearch. com></i></b> 
+        wrote:<br>
+        <b=
+lockquote style=3D"border-left: 2px solid rgb(16, 16, 255);"><br>From: 
+   =
+       April Abercrombie 
+          <april@abercrombiegh ostresearch. co=
+m><br>Subject: Re: 
+          [EVP-ITC] File uploading rules-ATTENTION J=
+ON<br>To: 
+          EVP-ITC@yahoogroups .com<br>Date: Sunday, May 10, 2009=
+, 2:28 
+          PM<br><br>
+          <div id=3D"yiv1839958601">
+         =
+ <div id=3D"ygrp-text">
+          <p></p>
+          <div><font face=3D"Myri=
+ad Pro" size=3D"2">Admittedly I do not know much 
+          about bit-=
+level comparisons, what they can or can't show so I will 
+          have to=
+ leave that to you. I have doubts because I worry once a file's 
+          =
+integrity has been messed with, I wonder that even though the bits 
+       =
+   match, maybe that doesn't mean they are the same quality as the 
+       =
+   original. I really don't know though what is possible or impossible 
+   =
+       when it comes to this area.</font></div>
+          <div><font face=
+=3D"Myriad Pro" size=3D"2"></font> </div>
+          <div>"It is probab=
+ly possible to set up an email compression scheme 
+          that does do l=
+ossy audio compression.  My tests show my setup 
+          does not.&n=
+bsp; If you'd like me to help test your setup, we can do 
+          that to=
+o. From what I see, lossy compression from an attachment would 
+          b=
+e very unusual."</div>
+          <div><font face=3D"Myriad Pro" size=3D"2">=
+</font> </div>
+          <div><font face=3D"Myriad Pro" size=3D"2">The=
+ problem I have is that not 
+          just from Jon, but I have heard it f=
+rom other people, and a 
+          professional and they all said that=
+ loss is possible. 
+          </font><font face=3D"Myriad Pro" size=3D"2">F=
+rom all that, my conclusion was 
+          that maybe in some cases loss wa=
+s possible.</font></div>
+          <div><font face=3D"Myriad Pro" size=3D"2=
+"></font> </div>
+          <div><font face=3D"Myriad Pro" size=3D"2">H=
+owever, your arguments do put 
+          doubt back into my mind, which pis=
+ses me off, because I had originally 
+          argued feverishly for no lo=
+ss, then I heard different from different 
+          sources and decided to=
+ do what I thought was the right thing 
+          by contacting a=
+ third party professional. So after all that, I decided 
+          I was li=
+cked and had to eat crow.</font></div>
+          <div><font face=3D"Myriad =
+Pro" size=3D"2"></font> </div>
+          <div><font face=3D"Myriad Pro=
+" size=3D"2">Now I am back at square one, from 
+          the other side LO=
+L!!! Computer people have been wrong in the 
+          past.</font></div>
+ =
+         <div><font face=3D"Myriad Pro" size=3D"2"></font> </div>
+    =
+      <div><font face=3D"Myriad Pro" size=3D"2"></font> </div>
+       =
+   <div><font face=3D"Myriad Pro" size=3D"2"><font face=3D"Times New Roman"=
+ size=3D"3">"It is probably possible to set up an email 
+          compress=
+ion scheme that does do lossy audio compression.  My 
+          tests =
+show my setup does not.  If you'd like me to help test your 
+         =
+ setup, we can do that too. From what I see, lossy compression from an 
+   =
+       attachment would be very unusual."</font></font></div>
+          <di=
+v><font face=3D"Myriad Pro" size=3D"2"></font> </div>
+          <div><=
+font face=3D"Myriad Pro" size=3D"2">I have not tested it from my 
+         =
+ computer, as I haven't had any problems with loss. I would really like 
+  =
+        to have Jon work with us on this, because he was the original perso=
+n 
+          who told me I was wrong.</font></div>
+          <div><font fac=
+e=3D"Myriad Pro" size=3D"2"></font> </div>
+          <div><font face=
+=3D"Myriad Pro" size=3D"2">But I will test it from my side. I 
+          wi=
+ll send a wav file to one of my other addresses. Then I will 
+          dow=
+nload and compare. If I think I hear a difference, then maybe I can 
+      =
+    have you do a bit-level comparison on the files.</font></div>
+         =
+ <div><font face=3D"Myriad Pro" size=3D"2"></font> </div>
+          <d=
+iv><font face=3D"Myriad Pro" size=3D"2">Either way, I am going to get to 
+ =
+         the bottom of this.</font></div>
+          <div><font face=3D"Myri=
+ad Pro" size=3D"2"></font> </div>
+          <div><font face=3D"Myriad =
+Pro" size=3D"2"></font> </div>
+          <div><font face=3D"Myriad Pro=
+" size=3D"2"></font> </div>
+          <blockquote style=3D"border-left=
+: 2px solid rgb(0, 0, 0);" dir=3D"ltr">
+            <div style=3D"font-vari=
+ant: normal; font-style: normal; font-family: arial; font-size: 10pt; font-=
+weight: normal; font-size-adjust: none;">----- 
+            Original Messag=
+e ----- </div>
+            <div style=3D"font-variant: normal; font-style: =
+normal; font-family: arial; font-size: 10pt; font-weight: normal; font-size=
+-adjust: none;"><b>From:</b> 
+            <a rel=3D"nofollow" title=3D"rast=
+erer@...">Rj</a> </div>
+            <div style=3D"font-variant: norma=
+l; font-style: normal; font-family: arial; font-size: 10pt; font-weight: no=
+rmal; font-size-adjust: none;"><b>To:</b> 
+            <a rel=3D"nofollow" =
+title=3D"EVP-ITC@yahoogroups.com">EVP-ITC@yahoogroups 
+            .com</a>=
+ </div>
+            <div style=3D"font-variant: normal; font-style: normal;=
+ font-family: arial; font-size: 10pt; font-weight: normal; font-size-adjust=
+: none;"><b>Sent:</b> 
+            Sunday, May 10, 2009 2:59 PM</div>
+     =
+       <div style=3D"font-variant: normal; font-style: normal; font-family:=
+ arial; font-size: 10pt; font-weight: normal; font-size-adjust: none;"><b>S=
+ubject:</b> 
+            Re: [EVP-ITC] File uploading rules-ATTENTION JON</=
+div>
+            <div><br></div>
+            <div id=3D"ygrp-text">
+       =
+     <p>
+            <table border=3D"0" cellpadding=3D"0" cellspacing=3D"0=
+">
+              <tbody>
+              <tr>
+                <td valign=3D"t=
+op">Yes you can tell loss of quality by a bit-level 
+                  comp=
+arison.  An audio file is just a file of bytes, that 
+                =
+  is later interpreted by an audio player.  Two files with 
+          =
+        the exact same contents, whether they are audio or image or a 
+    =
+              dababase or an exe, are indistinguishable from each 
+        =
+          other.  That is, if I copied the contents of one to a new 
+ =
+                 file, and the contents of the other to a new file, and ask=
+ed 
+                  you which file each came from, there would be no way =
+to 
+                  tell.  Even the audio player could not tell.&nbs=
+p; The 
+                  data is identical, and so the sound (or the pictu=
+re, etc) 
+                  would be identical.<br><br>Yes I did listen to =
+the results, 
+                  but that is not the best test (they sounded=
+ identical, but 
+                  that is a subjective opinion).  The=
+ real test is compring 
+                  the contents.  Identical con=
+tents means indentical data, 
+                  means identical audio.<br><=
+br>It is probably possible to set 
+                  up an email compressio=
+n scheme that does do lossy audio 
+                  compression.  My =
+tests show my setup does not.  If 
+                  you'd like me to =
+help test your setup, we can do that too. 
+                  From what I se=
+e, lossy compression from an attachment would be 
+                  very un=
+usual.<br><br><br>--- On <b>Sun, 5/10/09, April 
+                  Abercrom=
+bie <i><april@abercrombiegh ostresearch. 
+                  com></i><=
+/b> wrote:<br>
+                  <blockquote style=3D"border-left: 2px soli=
+d rgb(16, 16, 255);"><br>From: 
+                    April Abercrombie <a=
+pril@abercrombiegh ostresearch. 
+                    com><br>Subject: Re=
+: [EVP-ITC] File uploading 
+                    rules-ATTENTION JON<br>To: =
+EVP-ITC@yahoogroups .com<br>Date: 
+                    Sunday, May 10, 2009=
+, 1:50 PM<br><br>
+                    <div id=3D"yiv1007441602">
+          =
+          <div id=3D"ygrp-text">
+                    <p></p>
+              =
+      <div><font face=3D"Myriad Pro" size=3D"2">I have not personally 
+    =
+                experienced the loss myself. Jon from this list is the one =
+
+                    who originally told me about it. I have also hear=
+d of 
+                    it happening to a few other people. After&nb=
+sp;my 
+                    conversation with Jon, I talked to a comput=
+er 
+                    professional, and he told me that you can experienc=
+e loss in 
+                    attached files.</font></div>
+               =
+     <div><font face=3D"Myriad Pro" size=3D"2"></font> </div>
+        =
+            <div><font face=3D"Myriad Pro" size=3D"2">I don't know if you 
+=
+                    would be able to tell loss of quality in an audio file =
+with 
+                    a bit-level comparison. Just because the data has=
+ been 
+                    replaced, doesn't have to mean it is perfect.</f=
+ont></div>
+                    <div><font face=3D"Myriad Pro" size=3D"2"></=
+font> </div>
+                    <div><font face=3D"Myriad Pro" size=
+=3D"2">Did you listen to the 
+                    before and after res=
+ults?</font></div>
+                    <div><font face=3D"Myriad Pro" size=
+=3D"2"></font> </div>
+                    <div><font face=3D"Myriad Pr=
+o" size=3D"2">Jon-Please relay your 
+                    experience with th=
+e loss of quality on emailed 
+                    files.</font></div>
+     =
+               <div><font face=3D"Myriad Pro" size=3D"2"></font> </div=
+>
+                    <div><font face=3D"Myriad Pro" size=3D"2"></font>&nbs=
+p;</div>
+                    <blockquote style=3D"border-left: 2px solid rg=
+b(0, 0, 0);" dir=3D"ltr">
+                      <div style=3D"font-variant:=
+ normal; font-style: normal; font-family: arial; font-size: 10pt; font-weig=
+ht: normal; font-size-adjust: none;">----- 
+                      Original =
+Message ----- </div>
+                      <div style=3D"font-variant: norm=
+al; font-style: normal; font-family: arial; font-size: 10pt; font-weight: n=
+ormal; font-size-adjust: none;"><b>From:</b> 
+                      <a rel=
+=3D"nofollow" title=3D"rasterer@...">Rj</a> </div>
+                  =
+    <div style=3D"font-variant: normal; font-style: normal; font-family: ar=
+ial; font-size: 10pt; font-weight: normal; font-size-adjust: none;"><b>To:<=
+/b> 
+                      <a rel=3D"nofollow" title=3D"EVP-ITC@yahoogroups=
+.com">EVP-ITC@yahoogroups .com</a> </div>
+                      <div style=
+=3D"font-variant: normal; font-style: normal; font-family: arial; font-size=
+: 10pt; font-weight: normal; font-size-adjust: none;"><b>Sent:</b> 
+       =
+               Sunday, May 10, 2009 2:38 PM</div>
+                      <di=
+v style=3D"font-variant: normal; font-style: normal; font-family: arial; fo=
+nt-size: 10pt; font-weight: normal; font-size-adjust: none;"><b>Subject:</b=
+> 
+                      Re: [EVP-ITC] File uploading rules</div>
+         =
+             <div><br></div>
+                      <div id=3D"ygrp-text">
+ =
+                     <p>
+                      <table border=3D"0" cellpadd=
+ing=3D"0" cellspacing=3D"0">
+                        <tbody>
+              =
+          <tr>
+                          <td valign=3D"top">I can't vouch f=
+or your computer or 
+                            servers, but I just did so=
+me tests, and sent a 2.1MB 
+                            wav file from MSN t=
+o Yahoo and back, once allowing 
+                            compression, a=
+nd once turning it off.   I 
+                            was able=
+ to verify that one was compressed and one 
+                            was=
+ not, by checking the sizes when they arrived at 
+                         =
+   Yahoo. Once they came back to MSN, I then did a 
+                       =
+     bit-level comparison of the original, and the ones 
+                  =
+          sent around email.  They were all identical, 
+              =
+              which indicates lossless compression.<br><br>If you 
+        =
+                    have a file you'd like me to test for you, let me 
+    =
+                        know.  But I wouldn't take someone's word for =
+
+                            how your server's work, without testing them 
+=
+                            yourself.<br><br><br><br>--- On <b>Sun, 5/10/09=
+, 
+                            April Abercrombie <i><april@abercrombiegh=
+ 
+                            ostresearch. com></i></b> wrote:<br>
+     =
+                       <blockquote style=3D"border-left: 2px solid rgb(16, =
+16, 255);"><br>From: 
+                              April Abercrombie <a=
+pril@abercrombiegh 
+                              ostresearch. com><br>S=
+ubject: Re: [EVP-ITC] 
+                              File uploading rules<b=
+r>To: EVP-ITC@yahoogroups 
+                              .com<br>Date: Sund=
+ay, May 10, 2009, 12:50 
+                              PM<br><br>
+         =
+                     <div id=3D"yiv258581237">
+                            =
+  <div id=3D"ygrp-text">
+                              <p></p>
+            =
+                  <div><font face=3D"Myriad Pro" size=3D"2">For 
+          =
+                    executables, you may be right. However, for wav 
+      =
+                        files, the compression during email is not loss 
+  =
+                            less. </font></div>
+                           =
+   <div><font face=3D"Myriad Pro" size=3D"2"></font> </div>
+          =
+                    <div><font face=3D"Myriad Pro" size=3D"2">I used to 
+  =
+                            think as you do, in that the emailed 
+         =
+                     attachment of a wav file would not loose 
+       =
+                       anything. After a lengthy discourse with another 
+  =
+                            member here, I learned that I was wrong. The 
+ =
+                             reason why I did not realize it in the fi=
+rst 
+                              place is that when I would email a wav f=
+ile, I 
+                              would intentionally keep it in very s=
+mall 
+                              segments, to keep file size down. This =
+was just 
+                              for ease of transfer. But because o=
+f this, I had 
+                              not experienced any noticeable=
+ loss.</font></div>
+                              <div><font face=3D"Myriad=
+ Pro" size=3D"2"></font> </div>
+                              <div><fo=
+nt face=3D"Myriad Pro" size=3D"2">Now it may be 
+                          =
+    in some cases, depending on the servers or what 
+                      =
+        have you that the file goes through, that the loss 
+               =
+               may be less or more. But once the attachment is 
+           =
+                   downloaded, the quality has been 
+       =
+                       found to be less then the original 
+                =
+              wav.</font></div>
+                              <div><font fa=
+ce=3D"Myriad Pro" size=3D"2"></font> </div>
+                          =
+    <div><font face=3D"Myriad Pro" size=3D"2">Again though 
+               =
+               you can only really tell when the wav file is 
+        =
+                      large.</font></div>
+                              <di=
+v> </div>
+                              <div>----- Original Message --=
+--- </div>
+                              <blockquote style=3D"border-left: =
+2px solid rgb(0, 0, 0);" dir=3D"ltr"><div style=3D"font-variant: normal; fo=
+nt-style: normal; font-family: arial; font-size: 10pt; font-weight: normal;=
+ font-size-adjust: none;"><b>From:</b> 
+                                <a =
+rel=3D"nofollow" title=3D"rasterer@...">Rj</a> 
+                     =
+           </div>
+                                <div style=3D"font-varian=
+t: normal; font-style: normal; font-family: arial; font-size: 10pt; font-we=
+ight: normal; font-size-adjust: none;"><b>To:</b> 
+                        =
+        <a rel=3D"nofollow" title=3D"EVP-ITC@yahoogroups.com">EVP-ITC@yahoo=
+groups .com</a> </div>
+                                <div style=3D"font-v=
+ariant: normal; font-style: normal; font-family: arial; font-size: 10pt; fo=
+nt-weight: normal; font-size-adjust: none;"><b>Sent:</b> 
+                 =
+               Sunday, May 10, 2009 1:36 PM</div>
+                         =
+       <div style=3D"font-variant: normal; font-style: normal; font-family:=
+ arial; font-size: 10pt; font-weight: normal; font-size-adjust: none;"><b>S=
+ubject:</b> 
+                                Re: [EVP-ITC] File uploading r=
+ules</div>
+                                <div><br></div>
+                =
+                <div id=3D"ygrp-text">
+                                <p>
+=
+                                <table border=3D"0" cellpadding=3D"0" cells=
+pacing=3D"0">
+                                <tbody>
+                     =
+           <tr>
+                                <td valign=3D"top">The kind=
+ of compression that 
+                                occurs during an emai=
+l attachment is "lossless": 
+                                it compress th=
+e file cleverly without losing 
+                                information=
+.  For example, if I had a 
+                                program in=
+ some .exe files, and I sent it over 
+                                email=
+, it could compress it.  But if it 
+                                lo=
+st even one bit, the resulting exe file would 
+                            =
+    not execute again after it was uncompressed on 
+                       =
+         the other side.<br><br>This kind of compression 
+                 =
+               does things like looking for common patterns in 
+           =
+                     the file, and replacing them with a token.  
+    =
+                            A rough example would be if it found "Howdy 
+  =
+                              Neighbor" in a file 20 times, it could replac=
+e 
+                                all the occurances with say $HN1.  =
+And also 
+                                write a little dictionary in ther=
+e someplace 
+                                that says "$HN1=3DHowdy Neighb=
+or".<br><br>When the 
+                                file gets to its dest=
+ination it can be 
+                                uncompressed, and all oc=
+curences of $HN1 are 
+                                replaced with "Howdy =
+Neighbor".  So it was 
+                                compressed (ins=
+tead of 14 characters each, it 
+                                only needed=
+ 4, plus the dictionary), but lost no 
+                                data=
+.<br><br>Some formats, like jpeg and mp3. 
+                                =
+are not lossless.  Depending on the level 
+                           =
+     of compression, some level of data is lost, and 
+                     =
+           so cannot be recovered or reconstructed 
+                       =
+         later.<br><br>Rick<br><br><br><br>--- On <b>Sun, 
+                =
+                5/10/09, April Abercrombie 
+                               =
+ <i><april@abercrombiegh ostresearch. 
+                                c=
+om></i></b> wrote:<br>
+                                <blockquote style=
+=3D"border-left: 2px solid rgb(16, 16, 255);"><br>From: 
+                  =
+              April Abercrombie <april@abercrombiegh 
+                  =
+              ostresearch. com><br>Subject: Re: [EVP-ITC] 
+             =
+                   File uploading rules<br>To: EVP-ITC@yahoogroups 
+       =
+                         .com<br>Date: Sunday, May 10, 2009, 10:26 
+       =
+                         AM<br><br>
+                                <div id=
+=3D"yiv819860743">
+                                <div id=3D"ygrp-text">
+ =
+                               <p></p>
+                                <div=
+><font face=3D"Myriad Pro" size=3D"2">Another 
+                            =
+    thing:</font></div>
+                                <div><font face=3D"=
+Myriad Pro" size=3D"2"></font> </div>
+                                =
+<div><font face=3D"Myriad Pro" size=3D"2">I recently 
+                     =
+           found this out. When you email a file, if it is 
+               =
+                 not saved as a compressed format, the email 
+             =
+                   filtering process will actually compress the 
+          =
+                      file automatically.</font></div>
+                    =
+            <div><font face=3D"Myriad Pro" size=3D"2"></font> </div>
+ =
+                               <div><font face=3D"Myriad Pro" size=3D"2">So=
+ even if 
+                                you have attached a wav. file, it=
+ will loose 
+                                resolution over the email proc=
+ess. It will not 
+                                sound exactly the same as=
+ the original wav. 
+                                file. How much it diffe=
+rs depends on the size of 
+                                the file you are=
+ attaching. If it is a 
+                                very large fil=
+e, it will sound much 
+                                different.</font></d=
+iv>
+                                <div><font face=3D"Myriad Pro" size=3D"=
+2"></font> </div>
+                                <div><font face=3D"M=
+yriad Pro" size=3D"2">The only 
+                                exception t=
+o this is if the wav. file is small 
+                                enough=
+ that the filtering process will ignore 
+                                it=
+. It has to be pretty small though, like under 
+                           =
+     1 MB (I am not exactly sure of the 
+                             =
+   threshold).</font></div>
+                                <div><font face=
+=3D"Myriad Pro" size=3D"2"></font> </div>
+                            =
+    <div><font face=3D"Myriad Pro" size=3D"2">The best way 
+               =
+                 to share files over the internet if you 
+            =
+                    want them as close to the original as possible 
+       =
+                         is to upload them directly to a 
+                 =
+               website.</font></div>
+                                <div><=
+font face=3D"Myriad Pro" size=3D"2"></font><font face=3D"Myriad Pro" size=
+=3D"2"></font> </div>
+                                <blockquote styl=
+e=3D"border-left: 2px solid rgb(0, 0, 0);" dir=3D"ltr">
+                   =
+             <div style=3D"font-variant: normal; font-style: normal; font-f=
+amily: arial; font-size: 10pt; font-weight: normal; font-size-adjust: none;=
+">----- 
+                                Original Message ----- </div>
+    =
+                            <div style=3D"font-variant: normal; font-style:=
+ normal; font-family: arial; font-size: 10pt; font-weight: normal; font-siz=
+e-adjust: none;"><b>From:</b> 
+                                <a rel=3D"no=
+follow" title=3D"rasterer@...">Rj</a> 
+                              =
+  </div>
+                                <div style=3D"font-variant: normal=
+; font-style: normal; font-family: arial; font-size: 10pt; font-weight: nor=
+mal; font-size-adjust: none;"><b>To:</b> 
+                                <=
+a rel=3D"nofollow" title=3D"EVP-ITC@yahoogroups.com">EVP-ITC@yahoogroups .c=
+om</a> </div>
+                                <div style=3D"font-variant: n=
+ormal; font-style: normal; font-family: arial; font-size: 10pt; font-weight=
+: normal; font-size-adjust: none;"><b>Sent:</b> 
+                          =
+      Sunday, May 10, 2009 10:54 AM</div>
+                                <=
+div style=3D"font-variant: normal; font-style: normal; font-family: arial; =
+font-size: 10pt; font-weight: normal; font-size-adjust: none;"><b>Subject:<=
+/b> 
+                                Re: [EVP-ITC] File uploading rules</di=
+v>
+                                <div><br></div>
+                        =
+        <div id=3D"ygrp-text">
+                                <p>
+        =
+                        <table border=3D"0" cellpadding=3D"0" cellspacing=
+=3D"0">
+                                <tbody>
+                           =
+     <tr>
+                                <td valign=3D"top"><br>Pixelizati=
+on doesn't clean-up 
+                                the data: it replaces =
+it.  Imagine taking a 
+                                picture of a fi=
+eld of flowers, and beginning to 
+                                add level=
+s or pixelization to the picture.  
+                                So=
+on, you would not be able to tell there were 
+                             =
+   flowers there at all.  You would see a lot 
+                       =
+         of colored blocks.<br><br>Or in the other 
+                       =
+         direction, imagine you are looking at a 
+                         =
+       competely randomize bunch of pixes on your 
+                        =
+        screen: a complete screen of truely random 
+                       =
+         static snow.  Pixelizing this, after a 
+                     =
+           while, you would again start to see colored 
+                   =
+             blocks.<br><br>What's happening is that it is 
+               =
+                 processing an area of the image, taking (for 
+            =
+                    instance) the average value of that entire area, 
+     =
+                           and replacing all the blocks in that area with 
+=
+                                the average. 
+(Message over 64 KB, truncated)
+</article>
+</body>
+</html>
