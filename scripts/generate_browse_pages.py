@@ -3,6 +3,7 @@ import os
 import re
 import base64
 import urllib.parse
+import quopri
 from datetime import datetime
 from html import escape, unescape
 
@@ -138,6 +139,22 @@ def _try_decode_base64_heuristic(text):
     except Exception:
         return None
 
+def _try_decode_quoted_printable(text):
+    """Decode quoted-printable content if it looks like it; return decoded str or None."""
+    if not isinstance(text, str):
+        return None
+    # detect soft line breaks or =XX hex escapes
+    if not re.search(r'=\r?\n|=[0-9A-Fa-f]{2}', text):
+        return None
+    try:
+        b = quopri.decodestring(text)
+        try:
+            return b.decode('utf-8')
+        except Exception:
+            return b.decode('latin-1', errors='replace')
+    except Exception:
+        return None
+
 def _decode_base64_mime(text):
     """Find MIME parts marked base64, decode them, and return (combined_text, any_html_flag).
     Returns None if no base64 MIME parts found.
@@ -170,18 +187,35 @@ def _decode_base64_mime(text):
         ct_match = re.search(r"Content-Type:\s*([^\r\n;]+)", ct_section, flags=re.I)
         ctype = (ct_match.group(1).lower() if ct_match else "")
 
-        b64 = re.sub(r"\s+", "", payload)
+        # add detection of Content-Transfer-Encoding and decode quoted-printable payloads
+        cte_match = re.search(r"Content-Transfer-Encoding:\s*([^\r\n]+)", ct_section, flags=re.I)
+        cte = cte_match.group(1).lower().strip() if cte_match else ""
+        b64 = payload
         try:
-            raw = base64.b64decode(b64, validate=True)
-            try:
-                decoded = raw.decode("utf-8")
-            except Exception:
-                decoded = raw.decode("latin-1", errors="replace")
+            if 'base64' in cte:
+                b64_clean = re.sub(r"\s+", "", payload)
+                raw = base64.b64decode(b64_clean, validate=True)
+                try:
+                    decoded = raw.decode("utf-8")
+                except Exception:
+                    decoded = raw.decode("latin-1", errors="replace")
+            elif 'quoted-printable' in cte:
+                decoded = _try_decode_quoted_printable(payload) or payload
+            else:
+                # fall back: try to decode as base64 if it looks like base64, else keep raw
+                b64_clean = re.sub(r"\s+", "", payload)
+                if len(b64_clean) >= 16 and not re.search(r"[^A-Za-z0-9+/=]", b64_clean):
+                    raw = base64.b64decode(b64_clean, validate=True)
+                    try:
+                        decoded = raw.decode("utf-8")
+                    except Exception:
+                        decoded = raw.decode("latin-1", errors="replace")
+                else:
+                    decoded = payload
             parts.append(decoded)
             if "html" in ctype:
                 any_html = True
         except Exception:
-            # if payload isn't valid base64, keep original block
             parts.append(payload)
 
         pos = payload_end
@@ -401,6 +435,31 @@ def render_message_html(doc, prev_mid=None, next_mid=None):
 
     # body
     field, content = pick_text(doc)
+
+    # Aggressive quoted-printable handling: decode if it looks like qp or contains '=' artifacts.
+    qp_decoded = _try_decode_quoted_printable(content)
+    if qp_decoded is not None:
+        content = qp_decoded
+    else:
+        # If content contains '=' artifacts (soft breaks, broken encodings), try a repair pass:
+        if isinstance(content, str) and '=' in content:
+            # remove common soft-break markers (=<newline>) and similar noisy patterns,
+            # then attempt quoted-printable decode again; if that fails, strip stray '= ' fragments.
+            repaired = re.sub(r'=\r?\n', '', content)        # remove soft line breaks
+            repaired = re.sub(r'=\s+\n', '', repaired)       # remove "= <spaces>\n" variants
+            # try decoding repaired text
+            qp2 = _try_decode_quoted_printable(repaired)
+            if qp2 is not None:
+                content = qp2
+            else:
+                # final fallback: strip isolated '= ' or '=' followed by whitespace left in text
+                content = re.sub(r'=\s+', '', repaired)
+    # normalize field based on resulting content
+    if isinstance(content, str) and re.search(r"<\/?\w+>", content):
+        field = "html"
+    else:
+        field = "text"
+
     body_html = None
 
     # if pick_text returned HTML, extract the meaningful fragment (body) so we
