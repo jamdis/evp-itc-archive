@@ -8,7 +8,8 @@ __pycache__/
 out/
 site/lunr_index.json
 site/docs.json
-site/msg/      # per-message JSON files created from archive
+site/msg/
+# per-message JSON files created from archive
 # (if you generate any other derived files under site/, add them here)
 
 # --- Raw source archives (not to be committed) ---
