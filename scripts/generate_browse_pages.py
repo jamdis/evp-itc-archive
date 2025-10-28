@@ -316,6 +316,15 @@ def _slugify(s):
     return s or "unknown"
 # --------------------------------------------------------------------------
 
+def redact_emails(s):
+    """Replace the domain portion of email addresses with '----'.
+    Example: johnsmith@gmail.com -> johnsmith@----.
+    """
+    if not isinstance(s, str):
+        return s
+    # fixed character class for domain + case-insensitive
+    return re.sub(r'([A-Za-z0-9._%+\-]+)@([A-Za-z0-9.\-]+\.[A-Za-z]{2,})', r'\1@----', s, flags=re.IGNORECASE)
+
 def render_message_html(doc, prev_mid=None, next_mid=None):
     # id/subject
     sid = escape(str(doc.get("id", doc.get("_id", doc.get("message-id", "unknown")))))
@@ -328,9 +337,9 @@ def render_message_html(doc, prev_mid=None, next_mid=None):
             if isinstance(v, str) and v.strip():
                 subject = v.strip().splitlines()[0][:120]
                 break
-    subject = escape(str(subject or "No subject"))
+    subject = escape(redact_emails(str(subject or "No subject")))
 
-    # sender: common keys
+    # sender: common keys (redact domain in any email addresses for display)
     sender_keys = ("author", "from", "sender", "uploader", "owner")
     sender_val = None
     for k in sender_keys:
@@ -338,7 +347,8 @@ def render_message_html(doc, prev_mid=None, next_mid=None):
         if v:
             sender_val = v
             break
-    sender = escape(str(sender_val or doc.get("author_name") or "Unknown"))
+    raw_sender = sender_val or doc.get("author_name") or "Unknown"
+    sender = escape(redact_emails(str(raw_sender)))
 
     # date: common keys, try to parse ISO-like timestamps
     date_keys = ("timestamp", "date", "datetime", "sent", "created", "time")
@@ -389,6 +399,12 @@ def render_message_html(doc, prev_mid=None, next_mid=None):
     # final fallback: escape and show in <pre>
     if body_html is None:
         body_html = "<pre style='white-space:pre-wrap;'>" + escape(str(content)) + "</pre>"
+
+    # redact email domains inside the rendered body/html as well
+    try:
+        body_html = redact_emails(body_html)
+    except Exception:
+        pass
 
     # Insert the clean nav placeholder (no diff markers) — shared site nav
     nav_html = NAV_INCLUDE_SNIPPET
@@ -585,8 +601,9 @@ def main():
         lines.append("<ul>")
         for d in sorted(docs_in_year, key=sort_key, reverse=True):
             mid = compute_mid(d)
-            subj = escape(str(d.get("subject", "(no subject)")))
-            sender = escape(str(d.get("from", d.get("author", "") ) ))
+            subj = escape(redact_emails(str(d.get("subject", "(no subject)"))))
+            raw_sender = d.get("from", d.get("author", ""))
+            sender = escape(redact_emails(str(raw_sender)))
             date = escape(str(d.get("date", d.get("datetime", ""))))
             link = f"../msg/{urllib.parse.quote(mid)}.html"
             lines.append(f"<li><a href='{link}'>{subj}</a> — {sender} — {date}</li>")
@@ -609,21 +626,22 @@ def main():
 
     # sort authors by number of messages (desc), then by author name (asc)
     for author, msgs in sorted(authors.items(), key=lambda kv: (-len(kv[1]), kv[0].lower())):
-        slug = _slugify(author)
-        safe_dir = authors_dir  # one level only
-        # sort messages by date desc same as years
+        # use redacted author string for the filename so domains are masked in filenames too
+        slug = _slugify(redact_emails(author))
+        safe_dir = authors_dir
         msgs_sorted = sorted(msgs, key=sort_key, reverse=True)
+
+        # Build a clean author page: displayed author text is redacted; filename uses slug
         lines = []
-        # author pages live in site/browse/authors/ -> stylesheet is ../../styles.css
         lines.append("<!doctype html>\n<html><head><meta charset='utf-8'>")
-        lines.append(f"<title>Messages by {escape(author)}</title><link rel='stylesheet' href='../../styles.css' /></head><body>")
+        lines.append(f"<title>Messages by {escape(redact_emails(author))}</title><link rel='stylesheet' href='../../styles.css' /></head><body>")
         lines.append(NAV_INCLUDE_SNIPPET)
-        lines.append(f"<main style='max-width:880px;margin:1rem auto;padding:0 1rem;'><h1>Messages by {escape(author)}</h1>")
+        lines.append(f"<main style='max-width:880px;margin:1rem auto;padding:0 1rem;'><h1>Messages by {escape(redact_emails(author))}</h1>")
         lines.append("<p><a href='../index.html'>Back to browse index</a></p>")
         lines.append("<ul>")
         for d in msgs_sorted:
             mid = compute_mid(d)
-            subj = escape(str(d.get("subject", "(no subject)")))
+            subj = escape(redact_emails(str(d.get("subject", "(no subject)"))))
             date = escape(str(d.get("date", d.get("datetime", ""))))
             link = f"../../msg/{urllib.parse.quote(mid)}.html"
             lines.append(f"<li><a href='{link}'>{subj}</a> — {date}</li>")
@@ -635,6 +653,21 @@ def main():
                 fh.write("\n".join(lines))
         except Exception as e:
             print("error writing author page", out_path, e)
+
+    try:
+        auth_idx_lines = []
+        auth_idx_lines.append("<!doctype html>\n<html><head><meta charset='utf-8'><title>Browse authors</title><link rel='stylesheet' href='../../styles.css' /></head><body>")
+        auth_idx_lines.append(NAV_INCLUDE_SNIPPET)
+        auth_idx_lines.append("<main style='max-width:880px;margin:1rem auto;padding:0 1rem;'><h1>Browse by author</h1><ul>")
+        for author, msgs in sorted(authors.items(), key=lambda kv: (-len(kv[1]), kv[0].lower())):
+            # use the same redacted-based slug that the author pages use
+            slug = _slugify(redact_emails(author))
+            auth_idx_lines.append(f"<li><a href='{urllib.parse.quote(slug)}.html'>{escape(redact_emails(author))}</a> ({len(msgs)})</li>")
+        auth_idx_lines.append("</ul></main></body></html>")
+        with open(os.path.join(authors_dir, "index.html"), "w", encoding="utf-8") as fh:
+            fh.write("\n".join(auth_idx_lines))
+    except Exception as e:
+        print("error writing authors index", e)
 
     # write main browse index
     idx_lines = []
