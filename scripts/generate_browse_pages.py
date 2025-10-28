@@ -407,25 +407,13 @@ def render_message_html(doc, prev_mid=None, next_mid=None):
         nav_buttons.append(f'<a href="../msg/{urllib.parse.quote(next_thread)}.html">Next in thread</a>')
     local_nav_html = ("<p class='msg-nav'>" + " • ".join(nav_buttons) + "</p>") if nav_buttons else ""
 
+    # message pages live under site/msg/ so stylesheet path is ../styles.css
     html = f"""<!doctype html>
     <html>
     <head>
     <meta charset="utf-8">
     <title>{subject}</title>
-    <style>
-    body{{font-family:system-ui, -apple-system, "Segoe UI", Roboto, Arial; margin:0; padding:0; background:#fff;}}
-    /* make the shared nav span the full viewport */
-    #site-nav, #site-nav * {{ box-sizing: border-box; }}
-    #site-nav {{ width:100%; display:block; }}
-    /* keep page content centered in a container */
-    .page-container {{ max-width:880px; margin:3rem auto; padding:0 1rem; }}
-    header h1{{font-size:1.25rem;margin:0 0 .25rem 0}}
-    header p{{color:#555; margin:.25rem 0 1rem 0}}
-    .msg-body{{background:#fff; padding:1rem; border:1px solid #eee; border-radius:6px}}
-    a.year-link{{display:inline-block; margin-right:.5rem}}
-    .msg-nav{{margin:0 0 1rem 0;color:#444;font-size:0.95rem}}
-    .msg-nav a{{color:#0366d6;text-decoration:none;margin-right:.5rem}}
-    </style>
+    <link rel="stylesheet" href="../styles.css" />
     </head>
     <body>
     {nav_html}
@@ -589,8 +577,8 @@ def main():
 
     for year, docs_in_year in years.items():
         lines = []
-        # include nav placeholder (nav.html will be loaded client-side)
-        lines.append(f"<!doctype html>\n<html><head><meta charset='utf-8'><title>Messages — {escape(year)}</title></head><body>")
+        # include stylesheet and nav placeholder (nav.html will be loaded client-side)
+        lines.append(f"<!doctype html>\n<html><head><meta charset='utf-8'><title>Messages — {escape(year)}</title><link rel='stylesheet' href='../styles.css' /></head><body>")
         lines.append(NAV_INCLUDE_SNIPPET)
         lines.append(f"<main style='max-width:880px;margin:1rem auto;padding:0 1rem;'><h1>Messages — {escape(year)}</h1>")
         lines.append("<p><a href='index.html'>Back to browse index</a></p>")
@@ -626,8 +614,9 @@ def main():
         # sort messages by date desc same as years
         msgs_sorted = sorted(msgs, key=sort_key, reverse=True)
         lines = []
+        # author pages live in site/browse/authors/ -> stylesheet is ../../styles.css
         lines.append("<!doctype html>\n<html><head><meta charset='utf-8'>")
-        lines.append(f"<title>Messages by {escape(author)}</title></head><body>")
+        lines.append(f"<title>Messages by {escape(author)}</title><link rel='stylesheet' href='../../styles.css' /></head><body>")
         lines.append(NAV_INCLUDE_SNIPPET)
         lines.append(f"<main style='max-width:880px;margin:1rem auto;padding:0 1rem;'><h1>Messages by {escape(author)}</h1>")
         lines.append("<p><a href='../index.html'>Back to browse index</a></p>")
@@ -647,30 +636,10 @@ def main():
         except Exception as e:
             print("error writing author page", out_path, e)
 
-    # write per-author pages (already done above)
-    # now write authors index sorted by message count (desc), then name
-    try:
-        auth_idx_lines = []
-        auth_idx_lines.append("<!doctype html>\n<html><head><meta charset='utf-8'><title>Browse authors</title></head><body>")
-        auth_idx_lines.append(NAV_INCLUDE_SNIPPET)
-        auth_idx_lines.append("<main style='max-width:880px;margin:1rem auto;padding:0 1rem;'><h1>Browse by author</h1><ul>")
-        for author, msgs in sorted(authors.items(), key=lambda kv: (-len(kv[1]), kv[0].lower())):
-            slug = _slugify(author)
-            auth_idx_lines.append(f"<li><a href='{urllib.parse.quote(slug)}.html'>{escape(author)}</a> ({len(msgs)})</li>")
-        auth_idx_lines.append("</ul></main></body></html>")
-        with open(os.path.join(authors_dir, "index.html"), "w", encoding="utf-8") as fh:
-            fh.write("\n".join(auth_idx_lines))
-    except Exception as e:
-        print("error writing authors index", e)
-
-    # Insert Authors link into the main browse index (if you build idx_lines as before)
-    # e.g. after idx_lines.append("<p>Years:</p><ul>") and before closing, add:
-    # idx_lines.append("</ul>")
-    # idx_lines.append("<p><a href='authors/index.html'>Browse by author</a></p>")
-
     # write main browse index
     idx_lines = []
-    idx_lines.append("<!doctype html>\n<html><head><meta charset='utf-8'><title>Browse</title></head><body>")
+    # browse index lives in site/browse/ -> stylesheet is ../styles.css
+    idx_lines.append("<!doctype html>\n<html><head><meta charset='utf-8'><title>Browse</title><link rel='stylesheet' href='../styles.css' /></head><body>")
     idx_lines.append(NAV_INCLUDE_SNIPPET)
     idx_lines.append("<main style='max-width:880px;margin:1rem auto;padding:0 1rem;'>")
     idx_lines.append("<h1>Browse messages</h1>")

@@ -11,21 +11,31 @@
       d.innerHTML = html;
       document.body.insertBefore(d, document.body.firstChild);
 
+      // inject stylesheet (only once)
+      if(!document.querySelector('link[data-site-styles]')){
+        const p = location.pathname || '';
+        let prefix = '.';
+        if (/\/msg\//.test(p) || /\/browse\//.test(p)) prefix = '..';
+        const l = document.createElement('link');
+        l.setAttribute('rel','stylesheet');
+        l.setAttribute('href', prefix + '/styles.css');
+        l.setAttribute('data-site-styles','1');
+        document.head.appendChild(l);
+      }
+
       // determine prefix to root (., .., or ../..) based on current pathname depth
       const p = location.pathname || '';
       let prefix = '.';
       if (/\/msg\//.test(p) || /\/browse\//.test(p) || /\/site\/msg\//.test(p) || /\/site\/browse\//.test(p)) {
         prefix = '..';
       }
-
-      // set hrefs for elements that declare data-root-link
+      // set links
       document.querySelectorAll('[data-root-link]').forEach(function(el){
-        const tgt = el.getAttribute('data-root-link');
-        el.setAttribute('href', prefix + '/' + tgt);
+        var tgt = el.getAttribute('data-root-link');
+        el.setAttribute('href', prefix + "/" + tgt);
       });
-
-      // set form action to index at repo root
-      const form = document.getElementById('nav-form');
+      // set form action
+      var form = document.getElementById('nav-form');
       if(form) form.setAttribute('action', prefix + '/index.html');
 
       // copy q param into nav input if present
@@ -40,23 +50,18 @@
         form.addEventListener('submit', function(ev){
           ev.preventDefault();
           const qv = (document.getElementById('nav-q') || {}).value || '';
-          // If we're already on the index/search page, dispatch a nav-search event and call common handlers
           const isIndex = /\/(?:index\.html)?$/.test(location.pathname) || location.pathname === '/';
           if(isIndex){
-            // dispatch event for existing search code to listen to
             window.dispatchEvent(new CustomEvent('nav-search', { detail: { q: qv } }));
-            // best-effort call to commonly used global functions
             try { if (typeof window.doSearch === 'function') window.doSearch(qv); } catch(e){}
             try { if (typeof window.performSearch === 'function') window.performSearch(qv); } catch(e){}
             try { if (typeof window.search === 'function') window.search(qv); } catch(e){}
-            // fallback: update querystring so page scripts that read location.search react
             if(qv && history && history.replaceState){
               const url = new URL(location.href);
               url.searchParams.set('q', qv);
               history.replaceState(null, '', url.toString());
             }
           } else {
-            // navigate to index with q parameter
             const tgt = prefix + '/index.html?q=' + encodeURIComponent(qv);
             location.href = tgt;
           }
