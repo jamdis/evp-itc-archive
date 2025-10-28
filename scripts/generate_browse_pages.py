@@ -74,6 +74,10 @@ def pick_text(doc):
             return "text", vv
 
     # recursive fallback: find first non-empty string value, unescape and check for HTML
+    # skip ID/meta fields (don't mistake them for the message body)
+    skip_keys = {"id", "_id", "message-id", "message_id", "msgid", "mid",
+                 "subject", "year", "author", "from", "timestamp", "created", "date", "datetime"}
+
     def recurse(o):
         if isinstance(o, str):
             s = o.strip()
@@ -84,11 +88,20 @@ def pick_text(doc):
                 return ("html", s_un)
             return ("text", s_un)
         if isinstance(o, dict):
-            # iterate values in insertion order (json load preserves order)
-            for v in o.values():
+            # prefer any known priority keys first (if present)
+            for k in priority_keys:
+                if k in o:
+                    r = recurse(o[k])
+                    if r:
+                        return r
+            # then iterate other keys but skip obvious id-like keys
+            for k, v in o.items():
+                if k in skip_keys or k.lower().startswith("header") or k.lower().startswith("meta"):
+                    continue
                 r = recurse(v)
                 if r:
                     return r
+            return None
         if isinstance(o, list):
             for v in o:
                 r = recurse(v)
@@ -323,7 +336,23 @@ def redact_emails(s):
     if not isinstance(s, str):
         return s
     # fixed character class for domain + case-insensitive
-    return re.sub(r'([A-Za-z0-9._%+\-]+)@([A-Za-z0-9.\-]+\.[A-Za-z]{2,})', r'\1@----', s, flags=re.IGNORECASE)
+    return re.sub(r'([A-Za-z0-9._%+\-]+)@([A-Za-z0-9.\-]+\.[A-ZaZ]{2,})', r'\1@----', s, flags=re.IGNORECASE)
+
+def _extract_html_fragment(html_text):
+    """If html_text is a full HTML document, return the <body> contents;
+    otherwise return the original text. Keeps fragment if no <body> found.
+    """
+    if not isinstance(html_text, str):
+        return html_text
+    # prefer explicit <body> ... </body>
+    m = re.search(r'(?is)<body[^>]*>(.*?)</body>', html_text)
+    if m:
+        return m.group(1).strip()
+    # remove <!doctype ...>, <html ...>, <head>...</head> and <html> wrappers
+    s = re.sub(r'(?is)<!doctype[^>]*>', '', html_text)
+    s = re.sub(r'(?is)<head[^>]*>.*?</head>', '', s)
+    s = re.sub(r'(?is)</?html[^>]*>', '', s)
+    return s.strip()
 
 def render_message_html(doc, prev_mid=None, next_mid=None):
     # id/subject
@@ -374,16 +403,17 @@ def render_message_html(doc, prev_mid=None, next_mid=None):
     field, content = pick_text(doc)
     body_html = None
 
-    # if content is raw html from pick_text, use as-is
+    # if pick_text returned HTML, extract the meaningful fragment (body) so we
+    # don't embed an entire HTML document inside our page
     if field == "html" and isinstance(content, str) and content.strip():
-        body_html = content
+        body_html = _extract_html_fragment(content)
     else:
         # 1) try full-string base64 heuristic
         decoded_full = _try_decode_base64_heuristic(content)
         if decoded_full is not None:
             # if decoded looks like HTML, render as HTML
             if re.search(r"<\/?\w+>", decoded_full):
-                body_html = decoded_full
+                body_html = _extract_html_fragment(decoded_full)
             else:
                 content = decoded_full
         else:
@@ -392,7 +422,7 @@ def render_message_html(doc, prev_mid=None, next_mid=None):
             if dec:
                 combined, any_html = dec
                 if any_html:
-                    body_html = combined
+                    body_html = _extract_html_fragment(combined)
                 else:
                     content = combined
 
@@ -550,6 +580,14 @@ def main():
                 if cid in ndjson_index:
                     rendering_doc = ndjson_index[cid]
                     break
+
+        # DEBUG: print pick_text results and top-level keys for inspection
+        try:
+            dbg_field, dbg_content = pick_text(rendering_doc)
+            preview = (str(dbg_content)[:300] + '…') if dbg_content and len(str(dbg_content))>300 else str(dbg_content)
+            print(f"DEBUG mid={mid!r} subject={doc.get('subject','')!r} pick_field={dbg_field!r} preview={preview!r} keys={list(rendering_doc.keys())[:30]}")
+        except Exception as _e:
+            print("DEBUG pick_text failed for", mid, _e)
 
         # determine prev/next based on ordered_mids
         idx = mid_to_index.get(mid, None)
