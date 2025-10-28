@@ -1,21 +1,24 @@
-# --- Python env/cache ---
+# --- Python environment & cache ---
 __pycache__/
 *.pyc
 .venv/
 .env
 
-# --- Build outputs (do NOT commit generated message data) ---
+# --- Build artifacts (generated, do NOT commit user-derived data) ---
 out/
-site/
+site/lunr_index.json
+site/docs.json
+site/msg/      # per-message JSON files created from archive
+# (if you generate any other derived files under site/, add them here)
 
-# --- Raw source archives ---
+# --- Raw source archives (not to be committed) ---
 data/
 data/*.warc
 data/*.warc.gz
 data/*.cdx
 data/*.cdx.gz
 
-# --- OS/editor junk ---
+# --- OS/editor noise ---
 .DS_Store
 Thumbs.db
 *.swp
