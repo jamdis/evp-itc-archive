@@ -13,6 +13,18 @@ BROWSE_DIR = os.path.join(SITE_DIR, "browse")
 MSG_HTML_DIR = os.path.join(SITE_DIR, "msg")  # per-message HTML alongside JSON
 OUT_BY_YEAR_DIR = os.path.join(ROOT, "out", "by_year")
 
+# replace any messy NAV include with a robust loader that finds nav-include.js from pages at different depths
+NAV_INCLUDE_SNIPPET = (
+    '<div id="nav-placeholder"></div>'
+    '<script>(function(){'
+    'const candidates=[\'./nav-include.js\',\'../nav-include.js\',\'../../nav-include.js\'];'
+    'function tryLoad(i){if(i>=candidates.length) return;'
+    'const s=document.createElement(\"script\");s.src=candidates[i];'
+    's.onerror=function(){tryLoad(i+1)};'
+    'document.head.appendChild(s);}tryLoad(0);'
+    '})();</script>'
+)
+
 def ensure_dir(p):
     os.makedirs(p, exist_ok=True)
 
@@ -277,6 +289,33 @@ def _thread_key_from_doc(doc):
     mid = doc.get("message-id") or doc.get("message_id") or doc.get("msgid") or doc.get("id")
     return _norm_msgid(mid) or None
 
+# --- Add author helpers here (MOVED ABOVE main) ----------------------------
+def _author_name_from_doc(doc):
+    """Return a reasonable author/display name for a message dict (falls back to 'Unknown')."""
+    for k in ("author", "from", "sender", "owner", "uploader", "author_name", "displayName"):
+        v = doc.get(k)
+        if v and isinstance(v, str) and v.strip():
+            return v.strip()
+    # try to parse "Name <email@domain>" patterns
+    frm = doc.get("from") or doc.get("From")
+    if isinstance(frm, str):
+        m = re.match(r'\s*([^<]+)\s*<', frm)
+        if m:
+            return m.group(1).strip()
+    return "Unknown"
+
+def _slugify(s):
+    """Create a filesystem-safe slug for author names."""
+    if not s:
+        return "unknown"
+    s = s.lower().strip()
+    s = re.sub(r"[<>\"']", "", s)
+    s = re.sub(r"@", "-at-", s)
+    s = re.sub(r"[^a-z0-9]+", "-", s)
+    s = re.sub(r"-{2,}", "-", s).strip("-")
+    return s or "unknown"
+# --------------------------------------------------------------------------
+
 def render_message_html(doc, prev_mid=None, next_mid=None):
     # id/subject
     sid = escape(str(doc.get("id", doc.get("_id", doc.get("message-id", "unknown")))))
@@ -351,48 +390,58 @@ def render_message_html(doc, prev_mid=None, next_mid=None):
     if body_html is None:
         body_html = "<pre style='white-space:pre-wrap;'>" + escape(str(content)) + "</pre>"
 
-    # navigation links (prev/next chronological) and thread prev/next (same directory)
-    nav_links = []
-    # per-message pages live under site/msg/, so links should point there (relative from browse/index or msg pages)
-    nav_links.append('<a href="../browse/index.html">Browse</a>')
+    # Insert the clean nav placeholder (no diff markers) — shared site nav
+    nav_html = NAV_INCLUDE_SNIPPET
+
+    # Per-message navigation (chronological and thread links)
+    nav_buttons = []
     if prev_mid:
-        nav_links.append(f'<a href="../msg/{urllib.parse.quote(prev_mid)}.html">Prev message</a>')
+        nav_buttons.append(f'<a href="../msg/{urllib.parse.quote(prev_mid)}.html">Prev</a>')
     if next_mid:
-        nav_links.append(f'<a href="../msg/{urllib.parse.quote(next_mid)}.html">Next message</a>')
-    # thread-nav placeholders (may be provided by caller via doc fields below)
+        nav_buttons.append(f'<a href="../msg/{urllib.parse.quote(next_mid)}.html">Next</a>')
     prev_thread = doc.get("_prev_in_thread")
     next_thread = doc.get("_next_in_thread")
     if prev_thread:
-        nav_links.append(f'<a href="../msg/{urllib.parse.quote(prev_thread)}.html">Prev in thread</a>')
+        nav_buttons.append(f'<a href="../msg/{urllib.parse.quote(prev_thread)}.html">Prev in thread</a>')
     if next_thread:
-        nav_links.append(f'<a href="../msg/{urllib.parse.quote(next_thread)}.html">Next in thread</a>')
-    nav_html = " • ".join(nav_links)
+        nav_buttons.append(f'<a href="../msg/{urllib.parse.quote(next_thread)}.html">Next in thread</a>')
+    local_nav_html = ("<p class='msg-nav'>" + " • ".join(nav_buttons) + "</p>") if nav_buttons else ""
 
     html = f"""<!doctype html>
-<html>
-<head>
-<meta charset="utf-8">
-<title>{subject}</title>
-<style>
-body{{font-family:system-ui, -apple-system, "Segoe UI", Roboto, Arial; max-width:880px; margin:3rem auto; padding:0 1rem;}}
-header h1{{font-size:1.25rem;margin:0 0 .25rem 0}}
-header p{{color:#555; margin:.25rem 0 1rem 0}}
-.msg-body{{background:#fff; padding:1rem; border:1px solid #eee; border-radius:6px}}
-a.year-link{{display:inline-block; margin-right:.5rem}}
-</style>
-</head>
-<body>
-<header>
-<h1>{subject}</h1>
-<p>From: {sender} • Date: {pretty_date}</p>
-<p>{nav_html}</p>
-</header>
-<article class="msg-body">
-{body_html}
-</article>
-</body>
-</html>
-"""
+    <html>
+    <head>
+    <meta charset="utf-8">
+    <title>{subject}</title>
+    <style>
+    body{{font-family:system-ui, -apple-system, "Segoe UI", Roboto, Arial; margin:0; padding:0; background:#fff;}}
+    /* make the shared nav span the full viewport */
+    #site-nav, #site-nav * {{ box-sizing: border-box; }}
+    #site-nav {{ width:100%; display:block; }}
+    /* keep page content centered in a container */
+    .page-container {{ max-width:880px; margin:3rem auto; padding:0 1rem; }}
+    header h1{{font-size:1.25rem;margin:0 0 .25rem 0}}
+    header p{{color:#555; margin:.25rem 0 1rem 0}}
+    .msg-body{{background:#fff; padding:1rem; border:1px solid #eee; border-radius:6px}}
+    a.year-link{{display:inline-block; margin-right:.5rem}}
+    .msg-nav{{margin:0 0 1rem 0;color:#444;font-size:0.95rem}}
+    .msg-nav a{{color:#0366d6;text-decoration:none;margin-right:.5rem}}
+    </style>
+    </head>
+    <body>
+    {nav_html}
+    <main class="page-container">
+    <header>
+    <h1>{subject}</h1>
+    <p>From: {sender} • Date: {pretty_date}</p>
+    </header>
+    {local_nav_html}
+    <article class="msg-body">
+    {body_html}
+    </article>
+    </main>
+    </body>
+    </html>
+    """
     return html
 
 def main():
@@ -517,8 +566,10 @@ def main():
         # write to per-message files under site/msg/
         out_path = os.path.join(MSG_HTML_DIR, f"{mid}.html")
         try:
-            with open(out_path, "w", encoding="utf-8") as of:
-                of.write(html)
+            # sanitize accidental diff markers that got embedded before tags
+            html_out = re.sub(r'(?m)^[\+\-]+(?=<)', '', html)
+            with open(out_path, "w", encoding="utf-8") as fh:
+                fh.write(html_out)
             written += 1
         except Exception as e:
             print("error writing", out_path, e)
@@ -538,8 +589,10 @@ def main():
 
     for year, docs_in_year in years.items():
         lines = []
+        # include nav placeholder (nav.html will be loaded client-side)
         lines.append(f"<!doctype html>\n<html><head><meta charset='utf-8'><title>Messages — {escape(year)}</title></head><body>")
-        lines.append(f"<h1>Messages — {escape(year)}</h1>")
+        lines.append(NAV_INCLUDE_SNIPPET)
+        lines.append(f"<main style='max-width:880px;margin:1rem auto;padding:0 1rem;'><h1>Messages — {escape(year)}</h1>")
         lines.append("<p><a href='index.html'>Back to browse index</a></p>")
         lines.append("<ul>")
         for d in sorted(docs_in_year, key=sort_key, reverse=True):
@@ -549,7 +602,7 @@ def main():
             date = escape(str(d.get("date", d.get("datetime", ""))))
             link = f"../msg/{urllib.parse.quote(mid)}.html"
             lines.append(f"<li><a href='{link}'>{subj}</a> — {sender} — {date}</li>")
-        lines.append("</ul></body></html>")
+        lines.append("</ul></main></body></html>")
         out_path = os.path.join(BROWSE_DIR, f"{year}.html")
         try:
             with open(out_path, "w", encoding="utf-8") as fh:
@@ -557,16 +610,77 @@ def main():
         except Exception as e:
             print("error writing", out_path, e)
 
+    # --- build authors grouping and write per-author pages ------------------
+    authors = {}
+    for d in docs:
+        an = _author_name_from_doc(d) or "Unknown"
+        authors.setdefault(an, []).append(d)
+
+    authors_dir = os.path.join(BROWSE_DIR, "authors")
+    ensure_dir(authors_dir)
+
+    # sort authors by number of messages (desc), then by author name (asc)
+    for author, msgs in sorted(authors.items(), key=lambda kv: (-len(kv[1]), kv[0].lower())):
+        slug = _slugify(author)
+        safe_dir = authors_dir  # one level only
+        # sort messages by date desc same as years
+        msgs_sorted = sorted(msgs, key=sort_key, reverse=True)
+        lines = []
+        lines.append("<!doctype html>\n<html><head><meta charset='utf-8'>")
+        lines.append(f"<title>Messages by {escape(author)}</title></head><body>")
+        lines.append(NAV_INCLUDE_SNIPPET)
+        lines.append(f"<main style='max-width:880px;margin:1rem auto;padding:0 1rem;'><h1>Messages by {escape(author)}</h1>")
+        lines.append("<p><a href='../index.html'>Back to browse index</a></p>")
+        lines.append("<ul>")
+        for d in msgs_sorted:
+            mid = compute_mid(d)
+            subj = escape(str(d.get("subject", "(no subject)")))
+            date = escape(str(d.get("date", d.get("datetime", ""))))
+            link = f"../../msg/{urllib.parse.quote(mid)}.html"
+            lines.append(f"<li><a href='{link}'>{subj}</a> — {date}</li>")
+        lines.append("</ul></main></body></html>")
+
+        out_path = os.path.join(safe_dir, f"{slug}.html")
+        try:
+            with open(out_path, "w", encoding="utf-8") as fh:
+                fh.write("\n".join(lines))
+        except Exception as e:
+            print("error writing author page", out_path, e)
+
+    # write per-author pages (already done above)
+    # now write authors index sorted by message count (desc), then name
+    try:
+        auth_idx_lines = []
+        auth_idx_lines.append("<!doctype html>\n<html><head><meta charset='utf-8'><title>Browse authors</title></head><body>")
+        auth_idx_lines.append(NAV_INCLUDE_SNIPPET)
+        auth_idx_lines.append("<main style='max-width:880px;margin:1rem auto;padding:0 1rem;'><h1>Browse by author</h1><ul>")
+        for author, msgs in sorted(authors.items(), key=lambda kv: (-len(kv[1]), kv[0].lower())):
+            slug = _slugify(author)
+            auth_idx_lines.append(f"<li><a href='{urllib.parse.quote(slug)}.html'>{escape(author)}</a> ({len(msgs)})</li>")
+        auth_idx_lines.append("</ul></main></body></html>")
+        with open(os.path.join(authors_dir, "index.html"), "w", encoding="utf-8") as fh:
+            fh.write("\n".join(auth_idx_lines))
+    except Exception as e:
+        print("error writing authors index", e)
+
+    # Insert Authors link into the main browse index (if you build idx_lines as before)
+    # e.g. after idx_lines.append("<p>Years:</p><ul>") and before closing, add:
+    # idx_lines.append("</ul>")
+    # idx_lines.append("<p><a href='authors/index.html'>Browse by author</a></p>")
+
     # write main browse index
     idx_lines = []
     idx_lines.append("<!doctype html>\n<html><head><meta charset='utf-8'><title>Browse</title></head><body>")
+    idx_lines.append(NAV_INCLUDE_SNIPPET)
+    idx_lines.append("<main style='max-width:880px;margin:1rem auto;padding:0 1rem;'>")
     idx_lines.append("<h1>Browse messages</h1>")
     idx_lines.append("<p>Years:</p><ul>")
     for year in sorted(years.keys(), reverse=True):
         idx_lines.append(f"<li><a href='{escape(year)}.html'>{escape(year)}</a> ({len(years[year])})</li>")
     idx_lines.append("</ul>")
     idx_lines.append("<p><a href='../index.html'>Search</a></p>")
-    idx_lines.append("</body></html>")
+    idx_lines.append("<p><a href='authors/index.html'>Browse by author</a></p>")
+    idx_lines.append("</main></body></html>")
     try:
         with open(os.path.join(BROWSE_DIR, "index.html"), "w", encoding="utf-8") as fh:
             fh.write("\n".join(idx_lines))

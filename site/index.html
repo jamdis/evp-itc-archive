@@ -3,97 +3,217 @@
 <head>
   <meta charset="utf-8" />
   <meta name="viewport" content="width=device-width,initial-scale=1" />
-  <title>Archive Search (Minimal Demo)</title>
+  <title>EVP-ITC Archive</title>
   <script src="https://unpkg.com/lunr/lunr.js"></script>
   <style>
-    body { font-family: system-ui, sans-serif; margin: 2rem; }
-    input[type="search"] { width: 100%; padding: .75rem 1rem; font-size: 1rem; }
-    .result { padding: .75rem 0; border-bottom: 1px solid #ddd; }
-    .meta { color:#666; font-size:.9rem; margin:.25rem 0; }
-    .score { font-size:.8rem; color:#999; margin-left:.5rem; }
-    .subject { font-weight:600; }
+    :root{--maxw:1100px}
+    body{font-family:system-ui, -apple-system, "Segoe UI", Roboto, Arial; margin:0; padding:0; background:#fafafa}
+    .container{max-width:var(--maxw);margin:1rem auto;padding:0 1rem;display:grid;grid-template-columns:1fr 320px;gap:1rem;box-sizing:border-box}
+    .panel{background:#fff;border:1px solid #ececec;border-radius:8px;padding:1rem}
+    #results .result{padding:.5rem 0;border-bottom:1px solid #eee}
+    .meta{color:#666;font-size:.9rem;margin-bottom:.5rem}
+    .score{color:#999;font-size:.85rem;margin-left:.5rem}
+    #browse-list ul{list-style:none;padding-left:0;margin:0}
+    #browse-list li{padding:.25rem 0}
+    @media (max-width:900px){ .container{grid-template-columns:1fr} }
   </style>
 </head>
 <body>
-  <h1>Search</h1>
-  <input id="q" type="search" placeholder="type and hit Enter…" />
-  <div id="status">Loading index…</div>
-  <div id="results"></div>
+  <div id="nav-placeholder"></div>
+  <script src="nav-include.js"></script>
 
- <script>
-  let IDX = null;
-  let DOCS = null;
-  let BY_ID = null;
+  <div class="container">
+    <section class="panel" id="search-panel">
+      <div style="display:flex;gap:.5rem;align-items:center;margin-bottom:.5rem">
+        <input id="q" type="search" placeholder="Search messages…" style="flex:1;padding:.5rem;border:1px solid #ddd;border-radius:6px" />
+        <button id="do-search" style="padding:.5rem .75rem">Search</button>
+      </div>
+      <div id="status">Loading index…</div>
+      <div id="results" style="margin-top:.5rem"></div>
+    </section>
 
-  // Load index + docs
-  Promise.all([
-    fetch("lunr_index.json").then(r => r.json()),
-    fetch("docs.json").then(r => r.json())
-  ]).then(([idxRaw, docs]) => {
-    IDX = lunr.Index.load(idxRaw);
-    DOCS = docs;
-    BY_ID = Object.fromEntries(docs.map(d => [d.id, d]));
-    document.getElementById('status').textContent =
-      `Ready. ${docs.length} messages indexed.`;
-    document.getElementById('q').focus();
-  }).catch(err => {
-    document.getElementById('status').textContent = "Failed to load index.";
-    console.error(err);
-  });
+    <aside class="panel" id="browse-list">
+      <h3 style="margin-top:0">Browse by year</h3>
+      <div id="browse-contents">Loading…</div>
+    </aside>
+  </div>
 
-  // Run a search
-  function search(query) {
-    if (!IDX || !query.trim()) return [];
-    return IDX.search(query).map(r => ({ ...BY_ID[r.ref], score: r.score }));
+<script>
+(async function(){
+  let IDX = null, DOCS = [];
+  const qInput = document.getElementById('q');
+  const status = document.getElementById('status');
+  const resultsEl = document.getElementById('results');
+
+  function normId(id){
+    if(!id) return "";
+    return String(id).trim().replace(/^<|>$/g,'');
   }
 
-  // Render results with clickable expansion to fetch full text
-  async function showFullText(container, id) {
-    container.textContent = "Loading…";
-    try {
-      const data = await fetch(`msg/${id}.json`).then(r => r.json());
-      // simple escaping
-      const text = (data.full_text || "").replace(/</g,"&lt;").replace(/>/g,"&gt;");
-      container.innerHTML = `<pre style="white-space:pre-wrap;margin:.5rem 0 0">${text}</pre>`;
-    } catch (e) {
-      container.textContent = "Failed to load message.";
+  function renderResults(items){
+    resultsEl.innerHTML = "";
+    if(!items || items.length===0){
+      resultsEl.innerHTML = "<div>No results</div>";
+      status.textContent = "0 results";
+      return;
     }
-  }
-
-  function normId(id) {
-    if (!id) return "";
-    // remove surrounding angle brackets if present (same logic as generator)
-    return String(id).trim().replace(/^<|>$/g, "");
-  }
-
-  function render(items) {
-    const box = document.getElementById('results');
-    box.innerHTML = "";
-    items.slice(0, 50).forEach(it => {
+    items.slice(0,50).forEach(r=>{
       const div = document.createElement('div');
       div.className = 'result';
-      div.innerHTML = `
-        <div class="subject">
-          ${it.subject || "(no subject)"} <span class="score">score ${it.score.toFixed(3)}</span>
-        </div>
-        <div class="meta">${it.author || "unknown"} · ${it.timestamp || "no date"} · id ${it.id}</div>
-        <div class="result-controls">
-          <a href="msg/${encodeURIComponent(normId(it.id))}.html" class="open-msg-link">Open message</a>
-        </div>
-      `;
-      box.appendChild(div);
+      const subj = r.subject || "(no subject)";
+      const author = r.author || r.from || "unknown";
+      const when = r.date || r.datetime || "";
+      const id = normId(r.id || r._id || r['message-id'] || r.msgid);
+      const link = "msg/" + encodeURIComponent(id) + ".html";
+      div.innerHTML = `<div style="font-weight:600">${subj} <span class="score">score ${(r.score||0).toFixed(3)}</span></div>
+                       <div class="meta">${author} · ${when} · id ${id}</div>
+                       <div>${r.snippet || ""} <div style="margin-top:.25rem"><a href="${link}">Open message</a></div></div>`;
+      resultsEl.appendChild(div);
     });
-    document.getElementById('status').textContent =
-      `${items.length} result(s)`;
+    status.textContent = `${items.length} result(s)`;
   }
 
-  // Wire Enter key
-  document.getElementById('q').addEventListener('keydown', e => {
-    if (e.key === 'Enter') {
-      const q = e.currentTarget.value;
-      render(search(q));
+  function makeSnippet(doc, fields){
+    // simple snippet: first 300 chars of first available text field
+    for(const k of ['full_text','index_text','text','body','content','message']){
+      if(doc[k] && typeof doc[k]==='string'){
+        return doc[k].slice(0,300).replace(/\n+/g,' ') + (doc[k].length>300?'…':'');
+      }
     }
-  });
+    return "";
+  }
+
+  function attachSearchHandlers(){
+    document.getElementById('do-search').addEventListener('click', ()=> {
+      const q = qInput.value.trim();
+      if(!q) return;
+      doSearch(q);
+      // update URL
+      const u = new URL(location.href);
+      u.searchParams.set('q', q);
+      history.replaceState(null,'',u.toString());
+    });
+
+    // nav-search event (from global navbar)
+    window.addEventListener('nav-search', (ev)=>{
+      const q = (ev && ev.detail && ev.detail.q) || "";
+      qInput.value = q;
+      doSearch(q);
+    });
+
+    // Enter key
+    qInput.addEventListener('keypress', (e)=>{ if(e.key==='Enter'){ document.getElementById('do-search').click(); }});
+  }
+
+  function search(q){
+    if(!IDX) return [];
+    try{
+      const hits = IDX.search(q);
+      const docs = hits.map(h=>{
+        const d = DOCS.find(x => String(x.id) === String(h.ref) || String(_norm(x.id||'')).replace(/^<|>$/g,'')===String(h.ref));
+        return Object.assign({}, d||{}, { score: h.score, snippet: makeSnippet(d||{}) });
+      }).filter(Boolean);
+      return docs;
+    }catch(e){
+      console.error("search error", e);
+      return [];
+    }
+  }
+
+  // small helper used by nav-include when already on index
+  window.doSearch = function(q){
+    if(!q) return;
+    const items = search(q);
+    renderResults(items);
+  };
+
+  // load index/docs
+  try{
+    const [idxResp, docsResp] = await Promise.all([
+      fetch('lunr_index.json').then(r=>r.json()),
+      fetch('docs.json').then(r=>r.json())
+    ]);
+    IDX = lunr.Index.load(idxResp);
+    DOCS = docsResp;
+    status.textContent = `Ready. ${DOCS.length} messages indexed.`;
+    attachSearchHandlers();
+
+    // if ?q= present do initial search
+    const initialQ = new URLSearchParams(location.search).get('q');
+    if(initialQ){
+      qInput.value = initialQ;
+      doSearch(initialQ);
+    }
+  }catch(err){
+    status.textContent = "Failed to load index.";
+    console.error(err);
+  }
+
+  // fetch the generated browse index and inject its list (graceful if missing)
+  try{
+    const resp = await fetch('browse/index.html');
+    const parser = new DOMParser();
+
+    const container = document.getElementById('browse-contents');
+    container.innerHTML = '';
+
+    if(resp.ok){
+      const txt = await resp.text();
+      const doc = parser.parseFromString(txt, 'text/html');
+      const ul = doc.querySelector('main ul') || doc.querySelector('ul');
+      if(ul){
+        // clone the list and rewrite relative year links so they point to the browse/ folder
+        const ulClone = ul.cloneNode(true);
+        ulClone.querySelectorAll('a').forEach(a => {
+          const href = a.getAttribute('href') || '';
+          if (!href.match(/^([a-z]+:)?\/\//i) && !href.startsWith('/') && !href.startsWith('browse/')) {
+            a.setAttribute('href', 'browse/' + href);
+          }
+        });
+        const yearsDiv = document.createElement('div');
+        yearsDiv.innerHTML = '<h4>Years</h4>';
+        yearsDiv.appendChild(ulClone);
+        container.appendChild(yearsDiv);
+      }
+    } else {
+      container.textContent = 'Browse data not found';
+    }
+
+    // fetch authors index and append an Authors list
+    try {
+      const respA = await fetch('browse/authors/index.html');
+      if (respA.ok) {
+        const txtA = await respA.text();
+        const docA = parser.parseFromString(txtA, 'text/html');
+        const ulA = docA.querySelector('main ul') || docA.querySelector('ul');
+        if (ulA) {
+          const ulCloneA = ulA.cloneNode(true);
+          ulCloneA.querySelectorAll('a').forEach(a => {
+            const href = a.getAttribute('href') || '';
+            if (!href.match(/^([a-z]+:)?\/\//i) && !href.startsWith('/') && !href.startsWith('browse/authors/')) {
+              a.setAttribute('href', 'browse/authors/' + href);
+            }
+          });
+          const authDiv = document.createElement('div');
+          authDiv.innerHTML = '<h4>Authors</h4>';
+          authDiv.appendChild(ulCloneA);
+          container.appendChild(authDiv);
+        }
+      } else {
+        // authors listing missing is non-fatal; you can leave a notice if you prefer
+      }
+    } catch (e) {
+      console.warn('failed to load authors index', e);
+    }
+
+  }catch(e){
+    console.warn('failed to load browse index', e);
+    document.getElementById('browse-contents').textContent = 'Browse data unavailable';
+  }
+
+  // small normalizer used in search mapping
+  function _norm(v){ return (v==null)?'':String(v).trim().replace(/^<|>$/g,''); }
+})();
 </script>
 </body>
 </html>
