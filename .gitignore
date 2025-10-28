@@ -1,0 +1,21 @@
+# --- Python env/cache ---
+__pycache__/
+*.pyc
+.venv/
+.env
+
+# --- Build outputs (do NOT commit generated message data) ---
+out/
+site/
+
+# --- Raw source archives ---
+data/
+data/*.warc
+data/*.warc.gz
+data/*.cdx
+data/*.cdx.gz
+
+# --- OS/editor junk ---
+.DS_Store
+Thumbs.db
+*.swp

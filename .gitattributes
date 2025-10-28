@@ -1,0 +1,23 @@
+# Normalize all text automatically, LF line endings in repo, CRLF on Windows checkout
+* text=auto eol=lf
+
+# Explicitly mark common text types (helps diffs in some GUIs)
+*.py     text
+*.md     text
+*.txt    text
+*.html   text
+*.css    text
+*.js     text
+*.json   text
+*.yml    text
+*.yaml   text
+*.gitignore text
+
+# If you ever add binary assets (logos, etc), keep them binary
+*.png binary
+*.jpg binary
+*.gif binary
+*.ico binary
+*.zip binary
+*.gz  binary
+*.warc binary
