@@ -22,3 +22,15 @@ data/*.cdx.gz
 .DS_Store
 Thumbs.db
 *.swp
+
+# Additional patterns to avoid committing user data
+.env*
+*.ndjson
+*.mbox
+*.eml
+*.sqlite
+*.db
+*.sqlite3
+export/
+tmp/
+uploads/
