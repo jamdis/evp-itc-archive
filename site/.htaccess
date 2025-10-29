@@ -1,0 +1,8 @@
+AuthType Basic
+AuthName "Private Archive"
+AuthUserFile /home2/johnland/.htpasswd
+Require valid-user
+
+<IfModule mod_headers.c>
+  Header set X-Robots-Tag "noindex, nofollow"
+</IfModule>
