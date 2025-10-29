@@ -15,16 +15,8 @@ MSG_HTML_DIR = os.path.join(SITE_DIR, "msg")  # per-message HTML alongside JSON
 OUT_BY_YEAR_DIR = os.path.join(ROOT, "out", "by_year")
 
 # replace any messy NAV include with a robust loader that finds nav-include.js from pages at different depths
-NAV_INCLUDE_SNIPPET = (
-    '<div id="nav-placeholder"></div>'
-    '<script>(function(){'
-    'const candidates=[\'./nav-include.js\',\'../nav-include.js\',\'../../nav-include.js\'];'
-    'function tryLoad(i){if(i>=candidates.length) return;'
-    'const s=document.createElement(\"script\");s.src=candidates[i];'
-    's.onerror=function(){tryLoad(i+1)};'
-    'document.head.appendChild(s);}tryLoad(0);'
-    '})();</script>'
-)
+NAV_INCLUDE_SNIPPET = "<!-- nav include -->"
+META_ROBOTS = "<meta name='robots' content='noindex, nofollow' />"
 
 def ensure_dir(p):
     os.makedirs(p, exist_ok=True)
@@ -519,6 +511,7 @@ def render_message_html(doc, prev_mid=None, next_mid=None):
     <meta charset="utf-8">
     <title>{subject}</title>
     <link rel="stylesheet" href="../styles.css" />
+    {META_ROBOTS}
     </head>
     <body>
     {nav_html}
@@ -691,7 +684,7 @@ def main():
     for year, docs_in_year in years.items():
         lines = []
         # include stylesheet and nav placeholder (nav.html will be loaded client-side)
-        lines.append(f"<!doctype html>\n<html><head><meta charset='utf-8'><title>Messages — {escape(year)}</title><link rel='stylesheet' href='../styles.css' /></head><body>")
+        lines.append(f"<!doctype html>\n<html><head><meta charset='utf-8'>{META_ROBOTS}<title>Messages — {escape(year)}</title><link rel='stylesheet' href='../styles.css' /></head><body>")
         lines.append(NAV_INCLUDE_SNIPPET)
         lines.append(f"<main style='max-width:880px;margin:1rem auto;padding:0 1rem;'><h1>Messages — {escape(year)}</h1>")
         lines.append("<p><a href='index.html'>Back to browse index</a></p>")
@@ -731,7 +724,7 @@ def main():
         # Build a clean author page: displayed author text is redacted; filename uses slug
         lines = []
         lines.append("<!doctype html>\n<html><head><meta charset='utf-8'>")
-        lines.append(f"<title>Messages by {escape(redact_emails(author))}</title><link rel='stylesheet' href='../../styles.css' /></head><body>")
+        lines.append(f"{META_ROBOTS}<title>Messages by {escape(redact_emails(author))}</title><link rel='stylesheet' href='../../styles.css' /></head><body>")
         lines.append(NAV_INCLUDE_SNIPPET)
         lines.append(f"<main style='max-width:880px;margin:1rem auto;padding:0 1rem;'><h1>Messages by {escape(redact_emails(author))}</h1>")
         lines.append("<p><a href='../index.html'>Back to browse index</a></p>")
@@ -769,7 +762,7 @@ def main():
     # write main browse index
     idx_lines = []
     # browse index lives in site/browse/ -> stylesheet is ../styles.css
-    idx_lines.append("<!doctype html>\n<html><head><meta charset='utf-8'><title>Browse</title><link rel='stylesheet' href='../styles.css' /></head><body>")
+    idx_lines.append(f"<!doctype html>\n<html><head><meta charset='utf-8'>{META_ROBOTS}<title>Browse</title><link rel='stylesheet' href='../styles.css' /></head><body>")
     idx_lines.append(NAV_INCLUDE_SNIPPET)
     idx_lines.append("<main style='max-width:880px;margin:1rem auto;padding:0 1rem;'>")
     idx_lines.append("<h1>Browse messages</h1>")
